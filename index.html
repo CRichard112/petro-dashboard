@@ -76,6 +76,23 @@
     #sb-toggle{display:none!important}
   }
 </style>
+<!-- Live-reload: polls /version every 4 s when served via HTTP (serve_dashboard.ps1) -->
+<script>
+(function(){
+  if(location.protocol==='file:')return;
+  var last=null;
+  function chk(){
+    fetch('/version?_='+Date.now(),{cache:'no-store'})
+      .then(function(r){return r.json();})
+      .then(function(d){
+        if(last===null){last=d.built;return;}
+        if(d.built!==last){location.reload(true);}
+      }).catch(function(){});
+  }
+  setInterval(chk,4000);
+  chk();
+})();
+</script>
 </head>
 <body>
 <div class="no-print h-1 w-full" style="background:linear-gradient(90deg,#0059A8 0%,#3B9FE8 60%,#60A5FA 100%)"></div>
@@ -733,7 +750,7 @@ const WEEKLY_FORECASTS_DATA={
            }
 };
 const NEWS_PRELOADED=[];
-const BUILT_AT = "07 Jul 2026 22:17";
+const BUILT_AT = "07 Jul 2026 23:44";
 const PASS_HASH = "c9cf635e0294d81fda792880fb4b7086b3b6ae3e2fdede0c5c9172b18c3270c1"; const AUTH_ENABLED = true;
 </script>
 <script>
