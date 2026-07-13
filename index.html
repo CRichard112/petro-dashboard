@@ -1031,7 +1031,7 @@ const WEEKLY_FORECASTS_DATA={
                  }
 };
 const NEWS_PRELOADED=[];
-const BUILT_AT = "14 Jul 2026 00:13";
+const BUILT_AT = "14 Jul 2026 00:48";
 const PASS_HASH = "c9cf635e0294d81fda792880fb4b7086b3b6ae3e2fdede0c5c9172b18c3270c1"; const AUTH_ENABLED = true;
 </script>
 <script>
@@ -1779,7 +1779,25 @@ function buildForecastPanel(pid) {
     +   '<p class="text-xs text-slate-500 mt-2 leading-relaxed border-t border-slate-200 pt-2">' + fc.trendNote + '</p>'
     + '</div>'
     + driverCards
-    + _newsKeyDriversHtml(pid);
+    + _newsKeyDriversHtml(pid)
+    + '<div class="card p-4 mt-4">'
+    +   '<div class="flex items-center justify-between mb-3 flex-wrap gap-2">'
+    +     '<span class="section-title mb-0">Live Market Headlines</span>'
+    +     '<div class="flex items-center gap-3">'
+    +       '<span id="pnews-ts-' + pid + '" class="text-xs text-slate-400"></span>'
+    +       '<button onclick="pNewsRefresh(\'' + pid + '\')" class="flex items-center gap-1 text-xs font-semibold text-[#0059A8] hover:underline">&#8635; Refresh</button>'
+    +     '</div>'
+    +   '</div>'
+    +   '<div class="flex gap-2 flex-wrap mb-3" id="pnews-cats-' + pid + '">'
+    +     '<button class="cat-btn active" data-feed="https://www.icis.com/feed/" onclick="pNewsCat(this,\'' + pid + '\')">ICIS</button>'
+    +     '<button class="cat-btn" data-feed="https://oilprice.com/rss/main" onclick="pNewsCat(this,\'' + pid + '\')">OilPrice.com</button>'
+    +     '<button class="cat-btn" data-feed="https://www.argusmedia.com/rss/news/chemicals" onclick="pNewsCat(this,\'' + pid + '\')">Argus</button>'
+    +     '<button class="cat-btn" data-feed="https://www.spglobal.com/commodityinsights/en/market-insights/latest-news/petrochemicals/feed" onclick="pNewsCat(this,\'' + pid + '\')">S&amp;P Global</button>'
+    +   '</div>'
+    +   '<div id="pnews-' + pid + '" class="space-y-0">'
+    +     '<p class="text-sm text-slate-400 text-center py-4">Headlines load when you open this product.</p>'
+    +   '</div>'
+    + '</div>';
 }
 
 function buildComparisonTable(pid) {
@@ -1945,7 +1963,9 @@ function showView(id) {
     buildProductView(id);
     _built.add(id);
   }
+  if (PRODUCT_IDS.includes(id)) pNewsLoad(id, false);
   if (id === 'news') lnInit();
+  if (id === 'overview') ovNewsInit();
   window.scrollTo(0,0);
 }
 
@@ -2366,6 +2386,98 @@ async function _fetchRSSXml(feed) {
   } catch {
     throw new Error('All news proxies timed out - check your internet or try Refresh');
   }
+}
+
+// â”€â”€â”€ PER-PRODUCT LIVE NEWS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+const _PROD_KW = {
+  crude:     ['crude','brent','wti','opec','oil price','petroleum'],
+  naphtha:   ['naphtha','feedstock','steam cracker'],
+  ethylene:  ['ethylene','cracker','olefin','ethylene-naphtha'],
+  propylene: ['propylene','pdh','propylene oxide'],
+  ldpe:      ['ldpe','low density polyethylene','pe film'],
+  lldpe:     ['lldpe','linear low density','linear polyethylene'],
+  hdpe:      ['hdpe','high density polyethylene','hdpe blow'],
+  pp:        ['polypropylene','pp homopolymer','pp raffia','pp injection'],
+  benzene:   ['benzene','aromatic','btx'],
+  sm:        ['styrene','styrene monomer'],
+  butadiene: ['butadiene','bd ','synthetic rubber'],
+  mlldpe:    ['metallocene','mlldpe','mLLDPE'],
+  hdpe_inj:  ['hdpe injection','injection moulding','im grade'],
+  hdpe_pipe: ['hdpe pipe','pipe grade','pe100'],
+  bopp:      ['bopp','biaxially oriented polypropylene','opp film'],
+  pp_copo:   ['pp copolymer','impact copolymer','pp-c'],
+  pp_random: ['pp random','random copolymer','transparent pp'],
+  toluene:   ['toluene','tol ','aromatic solvent'],
+  methanol:  ['methanol','mto','methanol-to-olefin','dmfc'],
+};
+const _pNewsFeed = {};
+const _pNewsInited = {};
+
+function pNewsCat(btn, pid) {
+  document.querySelectorAll('#pnews-cats-' + pid + ' .cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  _pNewsFeed[pid] = btn.dataset.feed;
+  pNewsLoad(pid, false);
+}
+
+function pNewsRefresh(pid) { pNewsLoad(pid, true); }
+
+async function pNewsLoad(pid, force) {
+  const feed = _pNewsFeed[pid] || 'https://www.icis.com/feed/';
+  _pNewsFeed[pid] = feed;
+  const el = document.getElementById('pnews-' + pid);
+  const tsEl = document.getElementById('pnews-ts-' + pid);
+  if (!el) return;
+  if (!force) {
+    try {
+      const raw = localStorage.getItem(_LN_CACHE_LS + 'p_' + pid + '_' + feed);
+      if (raw) {
+        const d = JSON.parse(raw);
+        if (Date.now() - d.ts < _LN_TTL) { _pNewsRender(el, tsEl, d.items, pid, d.ts); return; }
+      }
+    } catch {}
+  }
+  el.innerHTML = '<p class="text-sm text-slate-400 text-center py-4"><span style="display:inline-block;animation:spin .9s linear infinite">&#8635;</span> Loading...</p>';
+  try {
+    const xml = await _fetchRSSXml(feed);
+    const nodes = Array.from(xml.querySelectorAll('item')).slice(0, 40);
+    const items = nodes.map(n => {
+      const get = tag => n.querySelector(tag)?.textContent?.trim() || '';
+      const linkEl = n.querySelector('link');
+      const link = (linkEl && linkEl.textContent.trim()) ? linkEl.textContent.trim() : get('guid');
+      return { title: get('title'), link, pubDate: get('pubDate'), description: (get('description')||'').replace(/<[^>]*>/g,'').trim().slice(0, 140) };
+    }).filter(a => a.title);
+    const ts = Date.now();
+    try { localStorage.setItem(_LN_CACHE_LS + 'p_' + pid + '_' + feed, JSON.stringify({items, ts})); } catch {}
+    _pNewsRender(el, tsEl, items, pid, ts);
+  } catch(e) {
+    el.innerHTML = '<p class="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-3">' + e.message + ' <button onclick="pNewsRefresh(\'' + pid + '\')" class="underline ml-2">Retry</button></p>';
+  }
+}
+
+function _pNewsRender(el, tsEl, allItems, pid, ts) {
+  if (tsEl && ts) {
+    const d = new Date(ts);
+    tsEl.textContent = 'Updated ' + d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
+  }
+  const kws = (_PROD_KW[pid] || []).map(k => k.toLowerCase());
+  let items = kws.length
+    ? allItems.filter(a => kws.some(k => (a.title + ' ' + a.description).toLowerCase().includes(k)))
+    : allItems;
+  if (items.length < 2) items = allItems;
+  items = items.slice(0, 6);
+  if (!items.length) { el.innerHTML = '<p class="text-sm text-slate-400 text-center py-4">No articles found for this product. Try another source.</p>'; return; }
+  el.innerHTML = items.map(a => {
+    const ago = _lnAgo(new Date(a.pubDate));
+    return '<a href="' + a.link + '" target="_blank" rel="noopener" '
+      + 'class="block border-b border-slate-100 last:border-0 py-3 px-1 hover:bg-slate-50 rounded group">'
+      + '<div class="flex items-center gap-2 mb-1">'
+      +   '<span class="text-xs text-slate-400">' + ago + '</span>'
+      + '</div>'
+      + '<p class="text-sm font-semibold text-slate-800 group-hover:text-[#0059A8] leading-snug">' + a.title + '</p>'
+      + (a.description ? '<p class="text-xs text-slate-500 mt-1 leading-relaxed">' + a.description + '...</p>' : '')
+      + '</a>';
+  }).join('');
 }
 
 // â”€â”€â”€ OVERVIEW NEWS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
