@@ -520,28 +520,17 @@
           </div>
         </div>
 
-        <!-- API key setup -->
-        <div id="ln-setup" class="hidden bg-amber-50 border border-amber-200 rounded-xl p-4 mb-4">
-          <p class="text-sm font-semibold text-amber-800 mb-1">Free API key required</p>
-          <p class="text-xs text-amber-700 mb-3">Sign up free at <strong>gnews.io</strong> &rarr; copy your API key &rarr; paste below. (100 requests/day, no credit card needed.)</p>
-          <div class="flex gap-2">
-            <input id="ln-key-in" type="text" placeholder="Paste your GNews API key hereâ€¦" class="flex-1 border border-amber-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 bg-white"/>
-            <button onclick="lnSaveKey()" class="bg-[#0059A8] hover:bg-[#003D7A] text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors shrink-0">Save &amp; Load</button>
-          </div>
-          <button onclick="lnClearKey()" class="mt-2 text-xs text-amber-600 underline">Clear saved key</button>
-        </div>
-
-        <!-- Category tabs -->
+        <!-- Source tabs -->
         <div class="flex gap-2 flex-wrap mb-4" id="ln-cats">
-          <button class="cat-btn active" data-q="crude oil OR Brent OR OPEC OR oil price" onclick="lnCat(this)">Crude &amp; OPEC</button>
-          <button class="cat-btn" data-q="petrochemical OR naphtha OR ethylene OR propylene OR cracker" onclick="lnCat(this)">Petrochemicals</button>
-          <button class="cat-btn" data-q="polyethylene OR polypropylene OR LLDPE OR HDPE OR polymer resin" onclick="lnCat(this)">Polymers</button>
-          <button class="cat-btn" data-q="benzene OR styrene OR toluene OR aromatics OR methanol OR butadiene" onclick="lnCat(this)">Aromatics</button>
-          <button class="cat-btn" data-q="energy market OR oil refinery OR LNG OR natural gas" onclick="lnCat(this)">Energy</button>
+          <button class="cat-btn active" data-feed="https://oilprice.com/rss/main" onclick="lnCat(this)">OilPrice.com</button>
+          <button class="cat-btn" data-feed="https://www.eia.gov/rss/news.xml" onclick="lnCat(this)">EIA</button>
+          <button class="cat-btn" data-feed="https://www.cnbc.com/id/10000934/device/rss/rss.html" onclick="lnCat(this)">CNBC Energy</button>
+          <button class="cat-btn" data-feed="https://feeds.content.dowjones.io/public/rss/mw_realtimeheadlines" onclick="lnCat(this)">MarketWatch</button>
+          <button class="cat-btn" data-feed="https://www.ft.com/companies/oil-gas?format=rss" onclick="lnCat(this)">FT Energy</button>
         </div>
 
         <!-- Results -->
-        <div id="ln-list"><p class="text-sm text-slate-400 text-center py-6">Enter your API key above to load live news.</p></div>
+        <div id="ln-list"><p class="text-sm text-slate-400 text-center py-6">Loading headlinesâ€¦</p></div>
       </div>
 
       <!-- â”€â”€ PDF REFERENCES â”€â”€ -->
@@ -1007,7 +996,7 @@ const WEEKLY_FORECASTS_DATA={
                  }
 };
 const NEWS_PRELOADED=[];
-const BUILT_AT = "13 Jul 2026 23:17";
+const BUILT_AT = "13 Jul 2026 23:22";
 const PASS_HASH = "c9cf635e0294d81fda792880fb4b7086b3b6ae3e2fdede0c5c9172b18c3270c1"; const AUTH_ENABLED = true;
 </script>
 <script>
@@ -2245,122 +2234,94 @@ function _renderNewsItems() {
   });
 })();
 
-// â”€â”€â”€ LIVE NEWS (GNews API) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-const _LN_KEY_LS   = 'petro_gnews_key';
-const _LN_CACHE_LS = 'petro_ln_cache_';
-const _LN_TTL      = 30 * 60 * 1000; // 30 min cache
-let   _lnQ         = 'crude oil OR Brent OR OPEC OR oil price';
+// â”€â”€â”€ LIVE NEWS (RSS via rss2json proxy &mdash; no API key needed) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+const _LN_CACHE_LS = 'petro_ln_rss_';
+const _LN_TTL      = 20 * 60 * 1000; // 20-min cache
+let   _lnFeed      = 'https://oilprice.com/rss/main';
 let   _lnInited    = false;
-
-function lnGetKey() { return localStorage.getItem(_LN_KEY_LS) || ''; }
-
-function lnSaveKey() {
-  const k = (document.getElementById('ln-key-in').value || '').trim();
-  if (!k) return;
-  localStorage.setItem(_LN_KEY_LS, k);
-  document.getElementById('ln-setup').classList.add('hidden');
-  lnFetch(_lnQ, true);
-}
-
-function lnClearKey() {
-  localStorage.removeItem(_LN_KEY_LS);
-  document.getElementById('ln-key-in').value = '';
-  document.getElementById('ln-setup').classList.remove('hidden');
-  document.getElementById('ln-list').innerHTML = '<p class="text-sm text-slate-400 text-center py-6">Enter your API key above to load live news.</p>';
-}
 
 function lnCat(btn) {
   document.querySelectorAll('#ln-cats .cat-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  _lnQ = btn.dataset.q;
-  lnFetch(_lnQ, false);
+  _lnFeed = btn.dataset.feed;
+  lnFetch(_lnFeed, false);
 }
 
-function lnRefresh() { lnFetch(_lnQ, true); }
+function lnRefresh() { lnFetch(_lnFeed, true); }
 
 function lnInit() {
   if (_lnInited) return;
   _lnInited = true;
-  const key = lnGetKey();
-  if (!key) {
-    document.getElementById('ln-setup').classList.remove('hidden');
-    return;
-  }
-  document.getElementById('ln-setup').classList.add('hidden');
-  const cached = _lnCacheGet(_lnQ);
-  if (cached) { _lnRender(cached.articles, cached.ts); } else { lnFetch(_lnQ, false); }
+  lnFetch(_lnFeed, false);
 }
 
-function _lnCacheGet(q) {
+function _lnCacheGet(feed) {
   try {
-    const raw = localStorage.getItem(_LN_CACHE_LS + q);
+    const raw = localStorage.getItem(_LN_CACHE_LS + feed);
     if (!raw) return null;
     const d = JSON.parse(raw);
     return (Date.now() - d.ts < _LN_TTL) ? d : null;
   } catch { return null; }
 }
 
-async function lnFetch(q, force) {
-  const key = lnGetKey();
-  if (!key) { document.getElementById('ln-setup').classList.remove('hidden'); return; }
-  if (!force) { const c = _lnCacheGet(q); if (c) { _lnRender(c.articles, c.ts); return; } }
-
+async function lnFetch(feed, force) {
   const listEl = document.getElementById('ln-list');
   const btn    = document.getElementById('ln-refresh-btn');
-  listEl.innerHTML = '<p class="text-sm text-slate-400 text-center py-8"><span class="spin inline-block mr-2">â†»</span>Fetching latest headlinesâ€¦</p>';
+  if (!force) {
+    const c = _lnCacheGet(feed);
+    if (c) { _lnRender(c.items, c.ts, c.feedTitle); return; }
+  }
+  listEl.innerHTML = '<p class="text-sm text-slate-400 text-center py-8"><span class="spin mr-1">â†»</span> Loading headlinesâ€¦</p>';
   if (btn) btn.disabled = true;
-
   try {
-    const url = 'https://gnews.io/api/v4/search?q=' + encodeURIComponent(q)
-              + '&token=' + encodeURIComponent(key)
-              + '&lang=en&max=10&sortby=publishedAt';
-    const res  = await fetch(url);
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.errors?.[0] || ('HTTP ' + res.status));
-    }
+    const proxy = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(feed) + '&count=12';
+    const res = await fetch(proxy);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
-    const articles = data.articles || [];
-    const ts = Date.now();
-    try { localStorage.setItem(_LN_CACHE_LS + q, JSON.stringify({articles, ts})); } catch {}
-    _lnRender(articles, ts);
+    if (data.status !== 'ok') throw new Error(data.message || 'Feed error');
+    const items     = data.items || [];
+    const feedTitle = (data.feed && data.feed.title) ? data.feed.title : '';
+    const ts        = Date.now();
+    try { localStorage.setItem(_LN_CACHE_LS + feed, JSON.stringify({items, ts, feedTitle})); } catch {}
+    _lnRender(items, ts, feedTitle);
   } catch(e) {
-    listEl.innerHTML = '<div class="bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-700">'
-      + '<strong>Could not load news:</strong> ' + e.message
-      + '<br><span class="text-xs text-red-500 mt-1 block">Check your API key is correct and you have requests remaining today (100/day on free plan).</span>'
-      + '<button onclick="lnClearKey()" class="mt-2 text-xs underline text-red-600">Re-enter API key</button>'
+    listEl.innerHTML = '<div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800">'
+      + '<strong>Could not load this feed:</strong> ' + e.message
+      + '<p class="text-xs text-amber-700 mt-1">This source may block automated requests. Try another source tab, or click Refresh to retry.</p>'
       + '</div>';
   } finally {
     if (btn) btn.disabled = false;
   }
 }
 
-function _lnRender(articles, ts) {
+function _lnRender(items, ts, feedTitle) {
   const tsEl   = document.getElementById('ln-ts');
   const listEl = document.getElementById('ln-list');
   if (tsEl && ts) {
     const d = new Date(ts);
     tsEl.textContent = 'Updated ' + d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
   }
-  if (!articles.length) {
-    listEl.innerHTML = '<p class="text-sm text-slate-400 text-center py-6">No articles found for this search.</p>';
+  if (!items.length) {
+    listEl.innerHTML = '<p class="text-sm text-slate-400 text-center py-6">No articles found.</p>';
     return;
   }
-  listEl.innerHTML = articles.map(a => {
-    const ago  = _lnAgo(new Date(a.publishedAt));
-    const src  = (a.source && a.source.name) ? a.source.name : 'Unknown';
-    const desc = (a.description || '').slice(0, 150) + ((a.description || '').length > 150 ? 'â€¦' : '');
-    const img  = a.image
-      ? '<img src="' + a.image + '" alt="" class="w-16 h-16 rounded-lg object-cover shrink-0 ml-3" loading="lazy" onerror="this.style.display=\'none\'">'
+  listEl.innerHTML = items.map(a => {
+    const pub  = a.pubDate ? new Date(a.pubDate) : null;
+    const ago  = pub ? _lnAgo(pub) : '';
+    const src  = a.author || feedTitle || '';
+    const desc = (a.description || '').replace(/<[^>]*>/g,'').trim().slice(0,160);
+    const tail = (a.description||'').replace(/<[^>]*>/g,'').trim().length > 160 ? 'â€¦' : '';
+    const img  = a.thumbnail
+      ? '<img src="' + a.thumbnail + '" alt="" class="w-16 h-16 rounded-lg object-cover shrink-0 ml-3" loading="lazy" onerror="this.style.display=\'none\'">'
       : '';
     return '<div class="border-b border-slate-100 last:border-0 py-3 flex items-start gap-2">'
       + '<div class="min-w-0 flex-1">'
       +   '<div class="flex items-center gap-2 mb-1 flex-wrap">'
-      +     '<span class="badge badge-source text-xs">' + src + '</span>'
-      +     '<span class="text-xs text-slate-400">' + ago + '</span>'
+      +     (src ? '<span class="badge badge-source text-xs">' + src + '</span>' : '')
+      +     (ago ? '<span class="text-xs text-slate-400">' + ago + '</span>' : '')
       +   '</div>'
-      +   '<a href="' + a.url + '" target="_blank" rel="noopener" class="text-sm font-semibold text-slate-800 hover:text-[#0059A8] leading-snug block mb-1">' + a.title + '</a>'
-      +   '<p class="text-xs text-slate-500 leading-relaxed">' + desc + '</p>'
+      +   '<a href="' + a.link + '" target="_blank" rel="noopener" class="text-sm font-semibold text-slate-800 hover:text-[#0059A8] leading-snug block mb-1">' + a.title + '</a>'
+      +   (desc ? '<p class="text-xs text-slate-500 leading-relaxed">' + desc + tail + '</p>' : '')
       + '</div>'
       + img
       + '</div>';
