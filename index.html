@@ -1006,7 +1006,7 @@ const WEEKLY_FORECASTS_DATA={
                  }
 };
 const NEWS_PRELOADED=[];
-const BUILT_AT = "13 Jul 2026 23:27";
+const BUILT_AT = "13 Jul 2026 23:30";
 const PASS_HASH = "c9cf635e0294d81fda792880fb4b7086b3b6ae3e2fdede0c5c9172b18c3270c1"; const AUTH_ENABLED = true;
 </script>
 <script>
@@ -1497,6 +1497,81 @@ function dirIcon(dir) {
     : '<svg class="inline mr-1 text-red-400" width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 5v14m0 0l-7-7m7 7l7-7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>';
 }
 
+// â”€â”€â”€ DRIVER CARD SOURCE METADATA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+const _DRIVER_SOURCES = {
+  crude:    ['Reuters','S&P Global','EIA','Bloomberg'],
+  naphtha:  ['S&P Global','Reuters','ICIS','Argus'],
+  ethylene: ['ICIS','S&P Global','Platts','Reuters'],
+  propylene:['ICIS','S&P Global','Platts','Argus'],
+  ldpe:     ['ICIS','Platts','Argus','S&P Global'],
+  lldpe:    ['ICIS','Platts','Argus','S&P Global'],
+  hdpe:     ['ICIS','Platts','S&P Global','Reuters'],
+  pp:       ['ICIS','Platts','Argus','S&P Global'],
+  benzene:  ['ICIS','S&P Global','Reuters','Platts'],
+  sm:       ['ICIS','S&P Global','Platts','Reuters'],
+  butadiene:['ICIS','S&P Global','Platts','Argus'],
+  mlldpe:   ['ICIS','Platts','Argus','S&P Global'],
+  hdpe_inj: ['ICIS','Platts','Argus','S&P Global'],
+  hdpe_pipe:['ICIS','Platts','S&P Global','Argus'],
+  bopp:     ['ICIS','Platts','Argus','S&P Global'],
+  pp_copo:  ['ICIS','Platts','Argus','S&P Global'],
+  pp_random:['ICIS','Platts','Argus','S&P Global'],
+  toluene:  ['ICIS','Reuters','S&P Global','Platts'],
+  methanol: ['ICIS','S&P Global','Argus','Platts'],
+};
+const _SOURCE_URLS = {
+  'ICIS':       'https://www.icis.com/explore/resources/news/',
+  'S&P Global': 'https://www.spglobal.com/commodityinsights/en/market-insights/latest-news/petrochemicals',
+  'Platts':     'https://www.spglobal.com/commodityinsights/en/market-insights/latest-news/oil',
+  'Reuters':    'https://www.reuters.com/business/energy/',
+  'Argus':      'https://www.argusmedia.com/en/news/latest-news',
+  'Bloomberg':  'https://www.bloomberg.com/energy',
+  'EIA':        'https://www.eia.gov/petroleum/weekly/',
+};
+const _TYPE_META = {
+  supply:    { label:'Supply',          cls:'bg-emerald-100 text-emerald-700', hdr:'Supply Pressure' },
+  demand:    { label:'Demand',          cls:'bg-pink-100 text-pink-700',       hdr:'Demand Signal' },
+  feedstock: { label:'Feedstock',       cls:'bg-teal-100 text-teal-700',       hdr:'Feedstock / Cost' },
+  plant:     { label:'Plant / Ops',     cls:'bg-amber-100 text-amber-700',     hdr:'Plant & Operations' },
+  geo:       { label:'Geopolitical',    cls:'bg-violet-100 text-violet-700',   hdr:'Geopolitical' },
+  macro:     { label:'Macro',           cls:'bg-blue-100 text-blue-700',       hdr:'Macro / Economy' },
+  spread:    { label:'Spread / Margin', cls:'bg-orange-100 text-orange-700',   hdr:'Spread & Margin' },
+};
+
+function _buildDriverCard(d, pid, idx) {
+  const meta    = _TYPE_META[d.type] || _TYPE_META.supply;
+  const sources = _DRIVER_SOURCES[pid] || ['ICIS','Reuters'];
+  const src     = sources[idx % sources.length];
+  const srcUrl  = _SOURCE_URLS[src] || 'https://www.icis.com/explore/resources/news/';
+  // Split text into headline (before first &mdash; or ;) and body
+  const cut     = d.text.search(/\s[&mdash;;]\s/);
+  const headline = (cut > 10 && cut < 110) ? d.text.slice(0, cut).trim() : d.text.slice(0, 72).trim() + (d.text.length > 72 ? 'â€¦' : '');
+  const body     = (cut > 10 && cut < 110) ? d.text.slice(cut + 2).trim() : d.text;
+  const impactCls = d.dir === 'pos'
+    ? 'border border-green-200 bg-green-50 text-green-700'
+    : 'border border-red-200 bg-red-50 text-red-600';
+  const impactTxt = d.dir === 'pos' ? '&#8593; Bullish price impact' : '&#8600; Bearish price impact';
+  const builtDate = (typeof BUILT_AT !== 'undefined') ? BUILT_AT.split(' ')[0] : '';
+  const extIcon   = '<svg width="10" height="10" fill="none" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6m0 0v6m0-6L10 14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>';
+  return '<div class="border border-slate-200 rounded-xl overflow-hidden mb-3">'
+    + '<div class="flex items-center justify-between px-3 py-2 bg-slate-50 border-b border-slate-100">'
+    +   '<span class="text-xs font-semibold text-slate-500 uppercase tracking-wide">' + meta.hdr + '</span>'
+    +   '<span class="badge ' + meta.cls + '">' + meta.label.toUpperCase() + '</span>'
+    + '</div>'
+    + '<div class="p-3">'
+    +   '<p class="text-sm font-bold text-slate-800 leading-snug mb-2">' + headline + '</p>'
+    +   '<p class="text-xs text-slate-600 leading-relaxed mb-3">' + body + '</p>'
+    +   '<span class="inline-block rounded-full px-2 py-0.5 text-xs font-medium ' + impactCls + '">' + impactTxt + '</span>'
+    + '</div>'
+    + '<div class="border-t border-slate-100 px-3 py-2 flex items-center justify-between">'
+    +   '<div class="flex items-center gap-2"><span class="badge badge-source text-xs">' + src + '</span>'
+    +   (builtDate ? '<span class="text-xs text-slate-400">' + builtDate + '</span>' : '')
+    +   '</div>'
+    +   '<a href="' + srcUrl + '" target="_blank" rel="noopener" class="flex items-center gap-1 text-xs font-semibold text-[#0059A8] hover:underline">Read on ' + src + ' ' + extIcon + '</a>'
+    + '</div>'
+    + '</div>';
+}
+
 function fmtPrice(v, unit) {
   if (!v && v!==0) return '&mdash;';
   return unit==='$/bbl' ? `$${v.toFixed(2)}` : `$${Math.round(v).toLocaleString()}`;
@@ -1656,37 +1731,30 @@ function buildStatCards(pid) {
 function buildForecastPanel(pid) {
   const fc = FORECASTS[pid];
   const p  = PRODUCTS.find(x=>x.id===pid);
-  const tf = buildTrendForecast(pid);
-  const trendPct = tf ? ((tf.projected - tf.lastVal)/tf.lastVal*100).toFixed(1) : null;
-  const dataContrib = `${fc.dataAdjPct>=0?'+':''}${fc.dataAdjPct}%`;
-  const qualContrib = `${fc.qualAdjPct>=0?'+':''}${fc.qualAdjPct}%`;
+  const dataContrib = (fc.dataAdjPct>=0?'+':'') + fc.dataAdjPct + '%';
+  const qualContrib = (fc.qualAdjPct>=0?'+':'') + fc.qualAdjPct + '%';
+  const driverCards = fc.drivers
+    .filter(d => ['supply','demand','feedstock','plant','geo','macro','spread'].includes(d.type))
+    .map((d, i) => _buildDriverCard(d, pid, i))
+    .join('');
 
-  return `
-    <div class="mb-3">
-      ${confBadge(fc.confidence)}
-      <p class="text-xs text-slate-500 mt-2 leading-relaxed">${fc.trendNote}</p>
-    </div>
-    <div class="bg-slate-50 rounded-lg p-3 mb-3">
-      <div class="text-xs text-slate-500 font-medium mb-1">Base-case range (next week)</div>
-      <div class="text-lg font-bold text-[#0059A8]">$${fc.range1w[0].toLocaleString()} &ndash; $${fc.range1w[1].toLocaleString()} <span class="text-xs font-normal text-slate-400">${p.unit}</span></div>
-      <div class="text-xs text-slate-400 mt-0.5">2-week range: $${fc.range2w[0].toLocaleString()}&ndash;$${fc.range2w[1].toLocaleString()} &nbsp;|&nbsp; 4-week range: $${fc.range4w[0].toLocaleString()}&ndash;$${fc.range4w[1].toLocaleString()}</div>
-    </div>
-    <div class="bg-blue-50 rounded-lg p-3 mb-3 text-xs">
-      <div class="font-semibold text-blue-800 mb-1">Adjustment breakdown</div>
-      <div class="flex justify-between text-blue-700 mb-0.5"><span>Data-driven trend:</span><span class="font-semibold">${dataContrib}</span></div>
-      <div class="flex justify-between text-blue-700 mb-0.5"><span>Qualitative / geopolitical:</span><span class="font-semibold">${qualContrib}</span></div>
-      <div class="flex justify-between text-blue-900 font-semibold border-t border-blue-200 pt-1 mt-1"><span>Net adjustment:</span><span>${fc.dataAdjPct+fc.qualAdjPct>=0?'+':''}${fc.dataAdjPct+fc.qualAdjPct}%</span></div>
-    </div>
-    <div>
-      <div class="text-xs font-semibold text-slate-600 mb-2">Key drivers</div>
-      ${fc.drivers.filter(d=>['supply','demand','feedstock','plant'].includes(d.type)).map(d=>`
-        <div class="flex gap-2 mb-2 items-start">
-          <div class="shrink-0 mt-0.5">${dirIcon(d.dir)}</div>
-          <div class="text-xs text-slate-600 leading-relaxed">${driverTag(d.type)}${d.text}</div>
-        </div>`).join('')}
-      ${_newsKeyDriversHtml(pid)}
-    </div>
-    <div class="text-xs text-slate-400 mt-3 border-t border-slate-100 pt-2">Forecast as of <strong>${typeof BUILT_AT!=='undefined'?BUILT_AT:'this build'}</strong></div>`;
+  return '<div class="text-xs text-slate-500 mb-3">Key market drivers'
+    + ' <span class="text-slate-300 mx-1">&middot;</span> Analysis with links to '
+    + '<a href="https://www.icis.com/explore/resources/news/" target="_blank" class="text-[#0059A8] hover:underline">ICIS</a>, '
+    + '<a href="https://www.reuters.com/business/energy/" target="_blank" class="text-[#0059A8] hover:underline">Reuters</a>, '
+    + '<a href="https://www.spglobal.com/commodityinsights" target="_blank" class="text-[#0059A8] hover:underline">S&amp;P Global</a>, '
+    + '<a href="https://www.argusmedia.com/en/news/latest-news" target="_blank" class="text-[#0059A8] hover:underline">Argus</a> and more'
+    + '</div>'
+    + '<div class="bg-slate-50 rounded-lg p-3 mb-3">'
+    +   '<div class="flex items-center justify-between mb-2">' + confBadge(fc.confidence)
+    +   '<div class="text-xs text-slate-400">Data: ' + dataContrib + ' &nbsp; News: ' + qualContrib + '</div></div>'
+    +   '<div class="text-xs text-slate-500 font-medium mb-1">Base-case range</div>'
+    +   '<div class="text-base font-bold text-[#0059A8]">$' + fc.range1w[0].toLocaleString() + ' &ndash; $' + fc.range1w[1].toLocaleString() + ' <span class="text-xs font-normal text-slate-400">' + p.unit + ' &middot; 1W</span></div>'
+    +   '<div class="text-xs text-slate-400 mt-1">2W: $' + fc.range2w[0].toLocaleString() + '&ndash;$' + fc.range2w[1].toLocaleString() + ' &nbsp;|&nbsp; 4W: $' + fc.range4w[0].toLocaleString() + '&ndash;$' + fc.range4w[1].toLocaleString() + '</div>'
+    +   '<p class="text-xs text-slate-500 mt-2 leading-relaxed border-t border-slate-200 pt-2">' + fc.trendNote + '</p>'
+    + '</div>'
+    + driverCards
+    + _newsKeyDriversHtml(pid);
 }
 
 function buildComparisonTable(pid) {
