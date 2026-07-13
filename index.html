@@ -1006,7 +1006,7 @@ const WEEKLY_FORECASTS_DATA={
                  }
 };
 const NEWS_PRELOADED=[];
-const BUILT_AT = "13 Jul 2026 23:24";
+const BUILT_AT = "13 Jul 2026 23:27";
 const PASS_HASH = "c9cf635e0294d81fda792880fb4b7086b3b6ae3e2fdede0c5c9172b18c3270c1"; const AUTH_ENABLED = true;
 </script>
 <script>
@@ -2284,20 +2284,43 @@ async function lnFetch(feed, force) {
   listEl.innerHTML = '<p class="text-sm text-slate-400 text-center py-8"><span class="spin mr-1">â†»</span> Loading headlinesâ€¦</p>';
   if (btn) btn.disabled = true;
   try {
-    const proxy = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(feed) + '&count=12';
-    const res = await fetch(proxy);
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const data = await res.json();
-    if (data.status !== 'ok') throw new Error(data.message || 'Feed error');
-    const items     = data.items || [];
-    const feedTitle = (data.feed && data.feed.title) ? data.feed.title : '';
-    const ts        = Date.now();
+    const proxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent(feed);
+    const res   = await fetch(proxy);
+    if (!res.ok) throw new Error('Proxy error ' + res.status);
+    const data  = await res.json();
+    if (!data.contents) throw new Error('No content returned');
+    // Parse RSS XML in the browser
+    const xml   = (new DOMParser()).parseFromString(data.contents, 'text/xml');
+    const chan  = xml.querySelector('channel');
+    const feedTitle = chan ? (chan.querySelector('title')?.textContent || '') : '';
+    const nodes = Array.from(xml.querySelectorAll('item')).slice(0, 15);
+    if (!nodes.length) throw new Error('Feed returned no articles');
+    const items = nodes.map(n => {
+      const get = tag => n.querySelector(tag)?.textContent?.trim() || '';
+      // <link> in RSS is text-node sibling, not always querySelector-able
+      const linkEl  = n.querySelector('link');
+      const link    = (linkEl && linkEl.textContent.trim())
+                      ? linkEl.textContent.trim()
+                      : (n.querySelector('guid')?.textContent?.trim() || '');
+      const desc    = get('description').replace(/<[^>]*>/g, '');
+      const thumbnail = n.querySelector('thumbnail')?.getAttribute('url')
+                      || n.querySelector('enclosure')?.getAttribute('url') || '';
+      return {
+        title:     get('title'),
+        link,
+        pubDate:   get('pubDate') || get('dc\\:date') || get('published'),
+        description: desc,
+        author:    get('author') || get('dc\\:creator') || '',
+        thumbnail,
+      };
+    });
+    const ts = Date.now();
     try { localStorage.setItem(_LN_CACHE_LS + feed, JSON.stringify({items, ts, feedTitle})); } catch {}
     _lnRender(items, ts, feedTitle);
   } catch(e) {
     listEl.innerHTML = '<div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800">'
       + '<strong>Could not load this feed:</strong> ' + e.message
-      + '<p class="text-xs text-amber-700 mt-1">This source may block automated requests. Try another source tab, or click Refresh to retry.</p>'
+      + '<p class="text-xs text-amber-700 mt-1">This source may block the proxy. Try another tab, or click Refresh to retry.</p>'
       + '</div>';
   } finally {
     if (btn) btn.disabled = false;
