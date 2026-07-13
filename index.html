@@ -58,19 +58,36 @@
   /* â”€â”€ Mobile â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   #sb-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:149;display:none}
   #sb-overlay.open{display:block}
+  /* Chart container &mdash; fixed height overridden on mobile */
+  .chart-wrap{position:relative;height:260px}
+  /* Tab row &mdash; horizontal scroll on mobile, wraps on desktop */
+  .tab-scroll{display:flex;gap:4px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+  .tab-scroll::-webkit-scrollbar{height:3px}
+  .tab-scroll::-webkit-scrollbar-thumb{background:#94a3b8;border-radius:2px}
   @media(max-width:767px){
     html{font-size:12px}
-    #sidebar{position:fixed;top:0;left:0;bottom:0;width:200px;z-index:150;transform:translateX(-200px);transition:transform .22s ease;padding-top:48px;max-height:100vh!important}
-    #sidebar.open{transform:translateX(0);box-shadow:6px 0 24px rgba(0,0,0,.18)}
-    header{padding-top:8px!important;padding-bottom:8px!important}
-    #main-content{padding:8px!important}
+    #sidebar{position:fixed;top:0;left:0;bottom:0;width:220px;z-index:150;transform:translateX(-220px);transition:transform .22s ease;padding-top:56px;max-height:100vh!important}
+    #sidebar.open{transform:translateX(0);box-shadow:8px 0 28px rgba(0,0,0,.22)}
+    .nav-link{min-height:44px;padding:10px 12px}
+    header{padding-top:6px!important;padding-bottom:6px!important}
+    #main-content{padding:8px!important;max-width:100vw;overflow-x:hidden}
     .desktop-only{display:none!important}
     .card{border-radius:8px}
     .card.card-hover{padding:8px!important}
-    .disclaimer{padding:8px 10px}
+    .disclaimer{padding:8px 10px;font-size:.75rem}
     .range-bar{height:8px}
     #overview-grid{gap:8px!important}
     #macro-context{gap:8px!important}
+    /* Chart shorter on mobile */
+    .chart-wrap{height:200px!important}
+    /* Tab buttons &mdash; bigger touch targets */
+    .tab-btn{padding:8px 12px;font-size:.78rem;white-space:nowrap;flex-shrink:0}
+    /* Stat cards compact */
+    .stat-grid{grid-template-columns:repeat(3,1fr)!important;gap:6px!important}
+    /* Section headers */
+    .section-title{font-size:.9rem;margin-bottom:8px}
+    /* Comparison table always scrollable */
+    .overflow-x-auto{-webkit-overflow-scrolling:touch}
   }
   @media(min-width:768px){
     #sb-toggle{display:none!important}
@@ -350,6 +367,15 @@
     <a class="nav-link" data-view="pp"        onclick="showView('pp')">PP</a>
     <a class="nav-link" data-view="benzene"   onclick="showView('benzene')">Benzene</a>
     <a class="nav-link" data-view="sm"        onclick="showView('sm')">Styrene Monomer</a>
+    <a class="nav-link" data-view="butadiene" onclick="showView('butadiene')">Butadiene</a>
+    <a class="nav-link" data-view="mlldpe"    onclick="showView('mlldpe')">mLLDPE C6</a>
+    <a class="nav-link" data-view="hdpe_inj"  onclick="showView('hdpe_inj')">HDPE Injection</a>
+    <a class="nav-link" data-view="hdpe_pipe" onclick="showView('hdpe_pipe')">HDPE Pipe</a>
+    <a class="nav-link" data-view="bopp"      onclick="showView('bopp')">BOPP Film</a>
+    <a class="nav-link" data-view="pp_copo"   onclick="showView('pp_copo')">PP Copolymer</a>
+    <a class="nav-link" data-view="pp_random" onclick="showView('pp_random')">PP Random</a>
+    <a class="nav-link" data-view="toluene"   onclick="showView('toluene')">Toluene</a>
+    <a class="nav-link" data-view="methanol"  onclick="showView('methanol')">Methanol</a>
     <div class="nav-section">Tools</div>
     <a class="nav-link" data-view="upload"    onclick="showView('upload')">Upload Data</a>
     <a class="nav-link" data-view="news"      onclick="showView('news')">
@@ -391,6 +417,15 @@
     <div id="view-pp"        class="view"></div>
     <div id="view-benzene"   class="view"></div>
     <div id="view-sm"        class="view"></div>
+    <div id="view-butadiene" class="view"></div>
+    <div id="view-mlldpe"    class="view"></div>
+    <div id="view-hdpe_inj"  class="view"></div>
+    <div id="view-hdpe_pipe" class="view"></div>
+    <div id="view-bopp"      class="view"></div>
+    <div id="view-pp_copo"   class="view"></div>
+    <div id="view-pp_random" class="view"></div>
+    <div id="view-toluene"   class="view"></div>
+    <div id="view-methanol"  class="view"></div>
 
     <!-- UPLOAD VIEW -->
     <div id="view-upload" class="view">
@@ -422,6 +457,15 @@
             <option value="pp">PP</option>
             <option value="benzene">Benzene</option>
             <option value="sm">Styrene Monomer</option>
+            <option value="butadiene">Butadiene</option>
+            <option value="mlldpe">mLLDPE C6</option>
+            <option value="hdpe_inj">HDPE Injection</option>
+            <option value="hdpe_pipe">HDPE Pipe</option>
+            <option value="bopp">BOPP Film</option>
+            <option value="pp_copo">PP Block Copolymer</option>
+            <option value="pp_random">PP Random</option>
+            <option value="toluene">Toluene</option>
+            <option value="methanol">Methanol</option>
           </select>
         </div>
         <div class="card p-5 mb-4">
@@ -566,191 +610,353 @@ const WEEKLY_DRIVERS_DATA={
 }
 ;
 const WEEKLY_FORECASTS_DATA={
-    "updated":  "2026-06-30",
+    "updated":  "2026-07-11",
     "method":  "weekly-conservative-auto",
     "crude":  {
                   "range1w":  [
-                                  84.62,
-                                  98.47
+                                  62.42,
+                                  75.52
                               ],
                   "range2w":  [
-                                  78.69,
-                                  101.64
+                                  56.8,
+                                  78.52
                               ],
                   "range4w":  [
-                                  68.79,
-                                  104.81
+                                  47.44,
+                                  81.51
                               ],
                   "confidence":  "LOW",
-                  "trendNote":  "Weekly forecast (auto 2026-06-30): $97.44 $/bbl latest market offer, edging higher (0.8%/pt) over last 12 periods (R2=0.05). News sentiment this week: -3% applied to range. Range skewed to downside; no recovery assumed. Trend fit is weak (R2=0.05) - treat range with caution.",
+                  "trendNote":  "Weekly forecast (auto 2026-07-11): $74 $/bbl latest market offer, edging higher (1.3%/pt) over last 12 periods (R2=0.07). Latest news sentiment: -3% applied to range. Range skewed to downside; no recovery assumed. Trend fit is weak (R2=0.07) - treat range with caution.",
                   "dataAdjPct":  1,
                   "qualAdjPct":  -3
               },
     "naphtha":  {
                     "range1w":  [
-                                    770,
-                                    913
+                                    585,
+                                    702
                                 ],
                     "range2w":  [
-                                    709,
-                                    946
+                                    535,
+                                    729
                                 ],
                     "range4w":  [
-                                    607,
-                                    979
+                                    452,
+                                    756
                                 ],
                     "confidence":  "LOW",
-                    "trendNote":  "Weekly forecast (auto 2026-06-30): $900 $/MT latest market offer, edging higher (1.8%/pt) over last 12 periods (R2=0.15). News sentiment this week: -3% applied to range. Range skewed to downside; no recovery assumed. Trend fit is weak (R2=0.15) - treat range with caution.",
-                    "dataAdjPct":  2,
+                    "trendNote":  "Weekly forecast (auto 2026-07-11): $689 $/MT latest market offer, edging higher (1.3%/pt) over last 12 periods (R2=0.04). Latest news sentiment: -3% applied to range. Range skewed to downside; no recovery assumed. Trend fit is weak (R2=0.04) - treat range with caution.",
+                    "dataAdjPct":  1,
                     "qualAdjPct":  -3
                 },
     "ethylene":  {
                      "range1w":  [
-                                     626,
-                                     870
+                                     589,
+                                     820
                                  ],
                      "range2w":  [
-                                     521,
-                                     926
+                                     489,
+                                     873
                                  ],
                      "range4w":  [
-                                     346,
-                                     982
+                                     324,
+                                     926
                                  ],
                      "confidence":  "LOW",
-                     "trendNote":  "Weekly forecast (auto 2026-06-30): $825 $/MT latest market offer, edging higher (1.9%/pt) over last 12 periods (R2=0.06). News sentiment this week: -3% applied to range. Range skewed to downside; no recovery assumed. Trend fit is weak (R2=0.06) - treat range with caution.",
+                     "trendNote":  "Weekly forecast (auto 2026-07-11): $778 $/MT latest market offer, edging higher (1.8%/pt) over last 12 periods (R2=0.04). Latest news sentiment: -3% applied to range. Range skewed to downside; no recovery assumed. Trend fit is weak (R2=0.04) - treat range with caution.",
                      "dataAdjPct":  2,
                      "qualAdjPct":  -3
                  },
     "propylene":  {
                       "range1w":  [
-                                      704,
-                                      965
+                                      709,
+                                      947
                                   ],
                       "range2w":  [
-                                      592,
-                                      1024
+                                      607,
+                                      1001
                                   ],
                       "range4w":  [
-                                      406,
-                                      1084
+                                      438,
+                                      1055
                                   ],
                       "confidence":  "LOW",
-                      "trendNote":  "Weekly forecast (auto 2026-06-30): $890 $/MT latest market offer, edging higher (1.1%/pt) over last 12 periods (R2=0.02). News sentiment this week: neutral. Range skewed to downside; no recovery assumed. Trend fit is weak (R2=0.02) - treat range with caution.",
-                      "dataAdjPct":  1,
+                      "trendNote":  "Weekly forecast (auto 2026-07-11): $879 $/MT latest market offer, edging higher (1.9%/pt) over last 12 periods (R2=0.06). Latest news sentiment: neutral. Range skewed to downside; no recovery assumed. Trend fit is weak (R2=0.06) - treat range with caution.",
+                      "dataAdjPct":  2,
                       "qualAdjPct":  0
                   },
     "ldpe":  {
                  "range1w":  [
-                                 1421,
-                                 1668
+                                 1029,
+                                 1290
                              ],
                  "range2w":  [
-                                 1316,
-                                 1724
+                                 917,
+                                 1349
                              ],
                  "range4w":  [
-                                 1140,
-                                 1780
+                                 730,
+                                 1409
                              ],
                  "confidence":  "LOW",
-                 "trendNote":  "Weekly forecast (auto 2026-06-30): $1597 $/MT latest market offer, edging higher (0.4%/pt) over last 12 periods (R2=0.01). News sentiment this week: neutral. Range skewed to downside; no recovery assumed. Trend fit is weak (R2=0.01) - treat range with caution.",
-                 "dataAdjPct":  0,
+                 "trendNote":  "Weekly forecast (auto 2026-07-11): $1215 $/MT latest market offer, edging higher (1.6%/pt) over last 12 periods (R2=0.07). Latest news sentiment: neutral. Range skewed to downside; no recovery assumed. Trend fit is weak (R2=0.07) - treat range with caution.",
+                 "dataAdjPct":  2,
                  "qualAdjPct":  0
              },
     "lldpe":  {
                   "range1w":  [
-                                  1160,
-                                  1389
+                                  887,
+                                  1139
                               ],
                   "range2w":  [
-                                  1061,
-                                  1441
+                                  780,
+                                  1196
                               ],
                   "range4w":  [
-                                  898,
-                                  1494
+                                  600,
+                                  1254
                               ],
                   "confidence":  "LOW",
-                  "trendNote":  "Weekly forecast (auto 2026-06-30): $1364 $/MT latest market offer, edging higher (0.6%/pt) over last 12 periods (R2=0.02). News sentiment this week: -3% applied to range. Range skewed to downside; no recovery assumed. Trend fit is weak (R2=0.02) - treat range with caution.",
-                  "dataAdjPct":  1,
+                  "trendNote":  "Weekly forecast (auto 2026-07-11): $1100 $/MT latest market offer, edging higher (1.6%/pt) over last 12 periods (R2=0.06). Latest news sentiment: -3% applied to range. Range skewed to downside; no recovery assumed. Trend fit is weak (R2=0.06) - treat range with caution.",
+                  "dataAdjPct":  2,
                   "qualAdjPct":  -3
               },
     "hdpe":  {
                  "range1w":  [
-                                 1183,
-                                 1410
+                                 923,
+                                 1172
                              ],
                  "range2w":  [
-                                 1086,
-                                 1462
+                                 816,
+                                 1229
                              ],
                  "range4w":  [
-                                 924,
-                                 1514
+                                 637,
+                                 1286
                              ],
                  "confidence":  "LOW",
-                 "trendNote":  "Weekly forecast (auto 2026-06-30): $1387 $/MT latest market offer, edging higher (0.4%/pt) over last 12 periods (R2=0.01). News sentiment this week: -3% applied to range. Range skewed to downside; no recovery assumed. Trend fit is weak (R2=0.01) - treat range with caution.",
-                 "dataAdjPct":  0,
+                 "trendNote":  "Weekly forecast (auto 2026-07-11): $1135 $/MT latest market offer, edging higher (1.6%/pt) over last 12 periods (R2=0.06). Latest news sentiment: -3% applied to range. Range skewed to downside; no recovery assumed. Trend fit is weak (R2=0.06) - treat range with caution.",
+                 "dataAdjPct":  2,
                  "qualAdjPct":  -3
              },
     "pp":  {
                "range1w":  [
-                               1097,
-                               1293
+                               920,
+                               1126
                            ],
                "range2w":  [
-                               1013,
-                               1338
+                               832,
+                               1173
                            ],
                "range4w":  [
-                               873,
-                               1383
+                               684,
+                               1220
                            ],
                "confidence":  "LOW",
-               "trendNote":  "Weekly forecast (auto 2026-06-30): $1275 $/MT latest market offer, broadly flat (0.3%/pt) over last 12 periods (R2=0.01). News sentiment this week: -3% applied to range. Range skewed to downside; no recovery assumed. Trend fit is weak (R2=0.01) - treat range with caution.",
-               "dataAdjPct":  0,
+               "trendNote":  "Weekly forecast (auto 2026-07-11): $1100 $/MT latest market offer, edging higher (1.5%/pt) over last 12 periods (R2=0.06). Latest news sentiment: -3% applied to range. Range skewed to downside; no recovery assumed. Trend fit is weak (R2=0.06) - treat range with caution.",
+               "dataAdjPct":  1,
                "qualAdjPct":  -3
            },
     "benzene":  {
                     "range1w":  [
-                                    678,
-                                    832
+                                    734,
+                                    877
                                 ],
                     "range2w":  [
-                                    612,
-                                    867
+                                    673,
+                                    909
                                 ],
                     "range4w":  [
-                                    503,
-                                    902
+                                    572,
+                                    942
                                 ],
                     "confidence":  "LOW",
-                    "trendNote":  "Weekly forecast (auto 2026-06-30): $812 $/MT latest market offer, edging higher (0.9%/pt) over last 12 periods (R2=0.04). News sentiment this week: -3% applied to range. Range skewed to downside; no recovery assumed. Trend fit is weak (R2=0.04) - treat range with caution.",
+                    "trendNote":  "Weekly forecast (auto 2026-07-11): $862 $/MT latest market offer, edging higher (0.9%/pt) over last 12 periods (R2=0.04). Latest news sentiment: -3% applied to range. Range skewed to downside; no recovery assumed. Trend fit is weak (R2=0.04) - treat range with caution.",
                     "dataAdjPct":  1,
                     "qualAdjPct":  -3
                 },
     "sm":  {
                "range1w":  [
-                               841,
-                               1004
+                               853,
+                               1023
                            ],
                "range2w":  [
-                               772,
-                               1041
+                               781,
+                               1062
                            ],
                "range4w":  [
-                               655,
-                               1078
+                               660,
+                               1100
                            ],
                "confidence":  "LOW",
-               "trendNote":  "Weekly forecast (auto 2026-06-30): $987 $/MT latest market offer, edging higher (0.8%/pt) over last 12 periods (R2=0.04). News sentiment this week: -3% applied to range. Range skewed to downside; no recovery assumed. Trend fit is weak (R2=0.04) - treat range with caution.",
+               "trendNote":  "Weekly forecast (auto 2026-07-11): $1005 $/MT latest market offer, edging higher (0.9%/pt) over last 12 periods (R2=0.04). Latest news sentiment: -3% applied to range. Range skewed to downside; no recovery assumed. Trend fit is weak (R2=0.04) - treat range with caution.",
                "dataAdjPct":  1,
                "qualAdjPct":  -3
-           }
+           },
+    "butadiene":  {
+                      "range1w":  [
+                                      795,
+                                      1222
+                                  ],
+                      "range2w":  [
+                                      612,
+                                      1319
+                                  ],
+                      "range4w":  [
+                                      308,
+                                      1417
+                                  ],
+                      "confidence":  "LOW",
+                      "trendNote":  "Weekly forecast (auto 2026-07-11): $1100 $/MT latest market offer, edging higher (1.5%/pt) over last 12 periods (R2=0.02). Latest news sentiment: neutral. Range skewed to downside; no recovery assumed. Trend fit is weak (R2=0.02) - treat range with caution.",
+                      "dataAdjPct":  1,
+                      "qualAdjPct":  0
+                  },
+    "mlldpe":  {
+                   "range1w":  [
+                                   1141,
+                                   1416
+                               ],
+                   "range2w":  [
+                                   1023,
+                                   1479
+                               ],
+                   "range4w":  [
+                                   826,
+                                   1542
+                               ],
+                   "confidence":  "LOW",
+                   "trendNote":  "Weekly forecast (auto 2026-07-11): $1338 $/MT latest market offer, edging higher (1.6%/pt) over last 12 periods (R2=0.09). Latest news sentiment: neutral. Range skewed to downside; no recovery assumed. Trend fit is weak (R2=0.09) - treat range with caution.",
+                   "dataAdjPct":  2,
+                   "qualAdjPct":  0
+               },
+    "hdpe_inj":  {
+                     "range1w":  [
+                                     887,
+                                     1112
+                                 ],
+                     "range2w":  [
+                                     791,
+                                     1163
+                                 ],
+                     "range4w":  [
+                                     631,
+                                     1214
+                                 ],
+                     "confidence":  "LOW",
+                     "trendNote":  "Weekly forecast (auto 2026-07-11): $1048 $/MT latest market offer, edging higher (1.6%/pt) over last 12 periods (R2=0.07). Latest news sentiment: neutral. Range skewed to downside; no recovery assumed. Trend fit is weak (R2=0.07) - treat range with caution.",
+                     "dataAdjPct":  2,
+                     "qualAdjPct":  0
+                 },
+    "hdpe_pipe":  {
+                      "range1w":  [
+                                      1055,
+                                      1359
+                                  ],
+                      "range2w":  [
+                                      925,
+                                      1429
+                                  ],
+                      "range4w":  [
+                                      707,
+                                      1499
+                                  ],
+                      "confidence":  "LOW",
+                      "trendNote":  "Weekly forecast (auto 2026-07-11): $1272 $/MT latest market offer, edging higher (1.8%/pt) over last 12 periods (R2=0.08). Latest news sentiment: neutral. Range skewed to downside; no recovery assumed. Trend fit is weak (R2=0.08) - treat range with caution.",
+                      "dataAdjPct":  2,
+                      "qualAdjPct":  0
+                  },
+    "bopp":  {
+                 "range1w":  [
+                                 936,
+                                 1122
+                             ],
+                 "range2w":  [
+                                 856,
+                                 1164
+                             ],
+                 "range4w":  [
+                                 724,
+                                 1207
+                             ],
+                 "confidence":  "LOW",
+                 "trendNote":  "Weekly forecast (auto 2026-07-11): $1069 $/MT latest market offer, edging higher (1.4%/pt) over last 12 periods (R2=0.07). Latest news sentiment: neutral. Range skewed to downside; no recovery assumed. Trend fit is weak (R2=0.07) - treat range with caution.",
+                 "dataAdjPct":  1,
+                 "qualAdjPct":  0
+             },
+    "pp_copo":  {
+                    "range1w":  [
+                                    937,
+                                    1151
+                                ],
+                    "range2w":  [
+                                    845,
+                                    1200
+                                ],
+                    "range4w":  [
+                                    692,
+                                    1249
+                                ],
+                    "confidence":  "LOW",
+                    "trendNote":  "Weekly forecast (auto 2026-07-11): $1090 $/MT latest market offer, edging higher (1.5%/pt) over last 12 periods (R2=0.07). Latest news sentiment: neutral. Range skewed to downside; no recovery assumed. Trend fit is weak (R2=0.07) - treat range with caution.",
+                    "dataAdjPct":  2,
+                    "qualAdjPct":  0
+                },
+    "pp_random":  {
+                      "range1w":  [
+                                      1064,
+                                      1268
+                                  ],
+                      "range2w":  [
+                                      976,
+                                      1315
+                                  ],
+                      "range4w":  [
+                                      830,
+                                      1362
+                                  ],
+                      "confidence":  "LOW",
+                      "trendNote":  "Weekly forecast (auto 2026-07-11): $1210 $/MT latest market offer, edging higher (1.3%/pt) over last 12 periods (R2=0.07). Latest news sentiment: neutral. Range skewed to downside; no recovery assumed. Trend fit is weak (R2=0.07) - treat range with caution.",
+                      "dataAdjPct":  1,
+                      "qualAdjPct":  0
+                  },
+    "toluene":  {
+                    "range1w":  [
+                                    762,
+                                    920
+                                ],
+                    "range2w":  [
+                                    695,
+                                    956
+                                ],
+                    "range4w":  [
+                                    582,
+                                    992
+                                ],
+                    "confidence":  "LOW",
+                    "trendNote":  "Weekly forecast (auto 2026-07-11): $875 $/MT latest market offer, edging higher (1.3%/pt) over last 12 periods (R2=0.05). Latest news sentiment: neutral. Range skewed to downside; no recovery assumed. Trend fit is weak (R2=0.05) - treat range with caution.",
+                    "dataAdjPct":  1,
+                    "qualAdjPct":  0
+                },
+    "methanol":  {
+                     "range1w":  [
+                                     329,
+                                     450
+                                 ],
+                     "range2w":  [
+                                     277,
+                                     477
+                                 ],
+                     "range4w":  [
+                                     190,
+                                     505
+                                 ],
+                     "confidence":  "LOW",
+                     "trendNote":  "Weekly forecast (auto 2026-07-11): $415 $/MT latest market offer, edging higher (2.2%/pt) over last 12 periods (R2=0.08). Latest news sentiment: neutral. Range skewed to downside; no recovery assumed. Trend fit is weak (R2=0.08) - treat range with caution.",
+                     "dataAdjPct":  2,
+                     "qualAdjPct":  0
+                 }
 };
 const NEWS_PRELOADED=[];
-const BUILT_AT = "11 Jul 2026 15:01";
+const BUILT_AT = "13 Jul 2026 21:59";
 const PASS_HASH = "c9cf635e0294d81fda792880fb4b7086b3b6ae3e2fdede0c5c9172b18c3270c1"; const AUTH_ENABLED = true;
 </script>
 <script>
@@ -766,7 +972,16 @@ const PRODUCTS = [
   { id:'hdpe',      name:'HDPE',        unit:'$/MT',  color:'#3b82f6', ref:'ICIS Film CFR SEA avg (weekly)' },
   { id:'pp',        name:'PP',          unit:'$/MT',  color:'#f97316', ref:'ICIS Flat Yarn CFR SEA avg (weekly)' },
   { id:'benzene',   name:'Benzene',     unit:'$/MT',  color:'#6366f1', ref:'Platts CFR Taiwan avg (weekly)' },
-  { id:'sm',        name:'Styrene Monomer', unit:'$/MT', color:'#f43f5e', ref:'Platts CFR SEA avg (weekly)' },
+  { id:'sm',        name:'Styrene Monomer',   unit:'$/MT', color:'#f43f5e', ref:'Platts CFR SEA avg (weekly)' },
+  { id:'butadiene', name:'Butadiene',         unit:'$/MT', color:'#d97706', ref:'ICIS CFR NEA avg (weekly)' },
+  { id:'mlldpe',    name:'mLLDPE C6',         unit:'$/MT', color:'#059669', ref:'ICIS CFR SEA avg (weekly)' },
+  { id:'hdpe_inj',  name:'HDPE Injection',    unit:'$/MT', color:'#2563eb', ref:'ICIS CFR SEA avg (weekly)' },
+  { id:'hdpe_pipe', name:'HDPE Pipe Black 100', unit:'$/MT', color:'#7c3aed', ref:'ICIS CFR SEA avg (weekly)' },
+  { id:'bopp',      name:'BOPP Film',         unit:'$/MT', color:'#db2777', ref:'ICIS CFR SEA avg (weekly)' },
+  { id:'pp_copo',   name:'PP Block Copolymer', unit:'$/MT', color:'#dc2626', ref:'ICIS CFR SEA avg (weekly)' },
+  { id:'pp_random', name:'PP Random',          unit:'$/MT', color:'#16a34a', ref:'ICIS CFR SEA avg (weekly)' },
+  { id:'toluene',   name:'Toluene',            unit:'$/MT', color:'#0891b2', ref:'ICIS CFR SEA avg (weekly)' },
+  { id:'methanol',  name:'Methanol',           unit:'$/MT', color:'#9333ea', ref:'ICIS CFR SEA avg (weekly)' },
 ];
 
 // series definitions: [lowColIdx, highColIdx, avgColIdx] or [singleColIdx]
@@ -831,6 +1046,33 @@ const SERIES_DEF = {
     { label:'Platts CFR China',   src:'platts_weekly_ole', cols:[27,28,29],    freq:'weekly', unit:'$/MT' },
     { label:'ICIS CFR SEA',       src:'icis_weekly',       cols:[153,154,155], freq:'weekly', unit:'$/MT' },
     { label:'ICIS CFR NEA',       src:'icis_weekly',       cols:[159,160,161], freq:'weekly', unit:'$/MT' },
+  ],
+  butadiene: [
+    { label:'ICIS CFR NEA',  src:'icis_weekly', cols:[0,1,2],   freq:'weekly', unit:'$/MT' },
+  ],
+  mlldpe: [
+    { label:'ICIS CFR SEA',  src:'icis_weekly', cols:[75,76,77], freq:'weekly', unit:'$/MT' },
+  ],
+  hdpe_inj: [
+    { label:'ICIS CFR SEA',  src:'icis_weekly', cols:[51,52,53], freq:'weekly', unit:'$/MT' },
+  ],
+  hdpe_pipe: [
+    { label:'ICIS CFR SEA',  src:'icis_weekly', cols:[84,85,86], freq:'weekly', unit:'$/MT' },
+  ],
+  bopp: [
+    { label:'ICIS CFR SEA',  src:'icis_weekly', cols:[120,121,122], freq:'weekly', unit:'$/MT' },
+  ],
+  pp_copo: [
+    { label:'ICIS CFR SEA',  src:'icis_weekly', cols:[147,148,149], freq:'weekly', unit:'$/MT' },
+  ],
+  pp_random: [
+    { label:'ICIS CFR SEA',  src:'icis_weekly', cols:[153,154,155], freq:'weekly', unit:'$/MT' },
+  ],
+  toluene: [
+    { label:'ICIS CFR SEA',  src:'icis_weekly', cols:[186,187,188], freq:'weekly', unit:'$/MT' },
+  ],
+  methanol: [
+    { label:'ICIS CFR SEA',  src:'icis_weekly', cols:[207,208,209], freq:'weekly', unit:'$/MT' },
   ],
 };
 
@@ -949,11 +1191,97 @@ const FORECASTS = {
       {type:'plant',     dir:'neg', text:'Multiple new China SM units ramping up in Q2-Q3 2026; incremental tonnes pressuring CFR SEA and China spot prices'},
     ],
   },
+  butadiene: {
+    range1w:[1060,1130], range2w:[1020,1160], range4w:[980,1200], confidence:'LOW',
+    trendNote:'Conservative: Butadiene CFR NEA tracking with crude/naphtha softness; synthetic rubber demand restrained. No recovery assumed without a clear auto/tire sector demand catalyst.',
+    dataAdjPct:-6, qualAdjPct:0,
+    drivers:[
+      {type:'feedstock', dir:'neg', text:'Naphtha/crude decline reducing cracker cost support; butadiene extraction economics weakening'},
+      {type:'demand',    dir:'neg', text:'Synthetic rubber demand soft in China and SEA; tire makers on need-only procurement amid auto sector weakness'},
+      {type:'supply',    dir:'neg', text:'Cracker turnaround resumptions in NEA lifting butadiene availability seasonally'},
+    ],
+  },
+  mlldpe: {
+    range1w:[1280,1360], range2w:[1240,1400], range4w:[1190,1440], confidence:'LOW',
+    trendNote:'Conservative: mLLDPE C6 premium grades facing pressure from conventional LLDPE oversupply; specialty demand stable but offer levels drifting lower with the broader PE market.',
+    dataAdjPct:-5, qualAdjPct:0,
+    drivers:[
+      {type:'supply',    dir:'neg', text:'Conventional LLDPE oversupply from US and China compressing mLLDPE premium; buyers seeking substitution on cost pressure'},
+      {type:'demand',    dir:'pos', text:'Food-grade and stretch film applications supporting mLLDPE demand at a premium vs standard grades'},
+    ],
+  },
+  hdpe_inj: {
+    range1w:[990,1050], range2w:[960,1080], range4w:[930,1110], confidence:'LOW',
+    trendNote:'Conservative: HDPE injection grades softer with broader HDPE market pressure; China capacity additions adding to CFR SEA supply. No near-term floor signal.',
+    dataAdjPct:-7, qualAdjPct:0,
+    drivers:[
+      {type:'supply',    dir:'neg', text:'China HDPE injection capacity additions increasing export volumes; CFR SEA offer levels under sustained pressure'},
+      {type:'demand',    dir:'neg', text:'Household goods and packaging injection demand below seasonal norms in SEA; buyers deferring spot purchases'},
+    ],
+  },
+  hdpe_pipe: {
+    range1w:[1190,1270], range2w:[1150,1310], range4w:[1110,1350], confidence:'LOW',
+    trendNote:'Conservative: HDPE pipe grades linked to infrastructure demand &mdash; China property overhang and regional capex caution limiting recovery. Saudi/UAE export competition adding supply.',
+    dataAdjPct:-6, qualAdjPct:0,
+    drivers:[
+      {type:'demand',    dir:'neg', text:'Construction-linked pipe demand weak in China and SEA; property sector overhang suppressing infrastructure resin consumption'},
+      {type:'supply',    dir:'neg', text:'Saudi and UAE pipe-grade HDPE exports competitive on cost; CFR SEA offers pressured'},
+    ],
+  },
+  bopp: {
+    range1w:[1010,1080], range2w:[980,1110], range4w:[950,1140], confidence:'LOW',
+    trendNote:'Conservative: BOPP film grades tracking PP and propylene lower; flexible packaging demand soft. China BOPP capacity surplus a structural headwind through H2 2026.',
+    dataAdjPct:-6, qualAdjPct:0,
+    drivers:[
+      {type:'supply',    dir:'neg', text:'China BOPP capacity additions in 2025-26 lengthening supply; export pressure into SEA markets'},
+      {type:'feedstock', dir:'neg', text:'PP feedstock decline providing cost relief to converters but also lowering BOPP offer floors'},
+      {type:'demand',    dir:'neg', text:'Flexible packaging demand soft; FMCG converters managing inventory tightly on uncertain consumer demand'},
+    ],
+  },
+  pp_copo: {
+    range1w:[1040,1110], range2w:[1010,1140], range4w:[980,1170], confidence:'LOW',
+    trendNote:'Conservative: PP copolymer grades tracking homopolymer market lower with China export surge; automotive and appliance demand below seasonal norms.',
+    dataAdjPct:-6, qualAdjPct:0,
+    drivers:[
+      {type:'supply',    dir:'neg', text:'China PP copolymer exports rising alongside homopolymer surge; CFR SEA offer levels pressured across all PP grades'},
+      {type:'demand',    dir:'neg', text:'Automotive and appliance PP demand in SEA below seasonal; OEM production schedules weakening'},
+    ],
+  },
+  pp_random: {
+    range1w:[1150,1230], range2w:[1110,1260], range4w:[1070,1300], confidence:'LOW',
+    trendNote:'Conservative: PP random grades at a premium over homopolymer; pressure from Chinese copolymer oversupply. Packaging demand soft &mdash; no near-term recovery catalyst.',
+    dataAdjPct:-5, qualAdjPct:0,
+    drivers:[
+      {type:'supply',    dir:'neg', text:'China PP copolymer and random grades increasing export share in SEA; premium compression vs homopolymer narrowing'},
+      {type:'demand',    dir:'neg', text:'Clear packaging and pipe-fitting demand subdued; converters managing costs by substituting lower-grade PP where possible'},
+    ],
+  },
+  toluene: {
+    range1w:[850,920], range2w:[820,950], range4w:[780,990], confidence:'LOW',
+    trendNote:'Conservative: Toluene CFR SEA tracking crude and benzene lower; gasoline blending demand seasonally firm but overshadowed by aromatics oversupply from Korea and Japan.',
+    dataAdjPct:-7, qualAdjPct:0,
+    drivers:[
+      {type:'feedstock', dir:'neg', text:'Crude and naphtha decline removing cost support; aromatics chain under broad pressure'},
+      {type:'supply',    dir:'neg', text:'Korea and Japan aromatics output elevated; toluene export push into SEA markets alongside benzene'},
+      {type:'demand',    dir:'pos', text:'Gasoline blending toluene demand seasonally supportive in summer driving season'},
+    ],
+  },
+  methanol: {
+    range1w:[395,430], range2w:[375,450], range4w:[355,470], confidence:'LOW',
+    trendNote:'Conservative: Methanol CFR SEA at low levels; Iran/China export pressure persistent. MTO economics remain challenged, limiting pull-through demand recovery in the near term.',
+    dataAdjPct:-4, qualAdjPct:0,
+    drivers:[
+      {type:'supply',    dir:'neg', text:'Iran and China methanol export volumes elevated; CFR SEA offer prices under sustained pressure'},
+      {type:'demand',    dir:'neg', text:'MTO (methanol-to-olefins) economics uncompetitive vs naphtha crackers; key demand segment operating below capacity'},
+      {type:'demand',    dir:'pos', text:'Formaldehyde and acetic acid demand providing baseline consumption; limits downside at current price levels'},
+    ],
+  },
 };
 
 // Apply weekly-updated drivers from drivers.json (overrides hardcoded defaults above)
 if (typeof WEEKLY_DRIVERS_DATA !== 'undefined' && WEEKLY_DRIVERS_DATA) {
-  ['crude','naphtha','ethylene','propylene','ldpe','lldpe','hdpe','pp','benzene','sm'].forEach(pid => {
+  ['crude','naphtha','ethylene','propylene','ldpe','lldpe','hdpe','pp','benzene','sm',
+   'butadiene','mlldpe','hdpe_inj','hdpe_pipe','bopp','pp_copo','pp_random','toluene','methanol'].forEach(pid => {
     if (FORECASTS[pid] && Array.isArray(WEEKLY_DRIVERS_DATA[pid])) {
       FORECASTS[pid].drivers = WEEKLY_DRIVERS_DATA[pid];
     }
@@ -962,7 +1290,8 @@ if (typeof WEEKLY_DRIVERS_DATA !== 'undefined' && WEEKLY_DRIVERS_DATA) {
 
 // Apply auto-computed conservative forecast ranges from forecasts.json (Thursday update)
 if (typeof WEEKLY_FORECASTS_DATA !== 'undefined' && WEEKLY_FORECASTS_DATA) {
-  ['crude','naphtha','ethylene','propylene','ldpe','lldpe','hdpe','pp','benzene','sm'].forEach(pid => {
+  ['crude','naphtha','ethylene','propylene','ldpe','lldpe','hdpe','pp','benzene','sm',
+   'butadiene','mlldpe','hdpe_inj','hdpe_pipe','bopp','pp_copo','pp_random','toluene','methanol'].forEach(pid => {
     const f = WEEKLY_FORECASTS_DATA[pid];
     if (FORECASTS[pid] && f) {
       if (f.range1w)                FORECASTS[pid].range1w    = f.range1w;
@@ -1220,11 +1549,11 @@ function buildProductView(pid) {
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
       <div class="lg:col-span-2 flex flex-col gap-4">
         <div class="card p-4">
-          <div class="flex items-center justify-between mb-3">
-            <div class="text-sm font-semibold text-slate-700">Price History</div>
-            <div class="flex gap-1 flex-wrap" id="tabs-${pid}">${tabsHtml}</div>
+          <div class="flex flex-wrap items-start justify-between gap-2 mb-3">
+            <div class="text-sm font-semibold text-slate-700 shrink-0">Price History</div>
+            <div class="tab-scroll" id="tabs-${pid}">${tabsHtml}</div>
           </div>
-          <div style="position:relative;height:260px"><canvas id="chart-${pid}"></canvas></div>
+          <div class="chart-wrap"><canvas id="chart-${pid}"></canvas></div>
           <p class="text-xs text-slate-400 mt-2">Shaded band = weekly low&ndash;high range where available. Source: <span id="src-label-${pid}">${defs[0]?.label||''}</span></p>
         </div>
         ${_buildDealsHtml(pid)}
@@ -1456,7 +1785,8 @@ function toggleSidebar() {
 }
 
 // â”€â”€â”€ VIEW ROUTING â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-const PRODUCT_IDS = ['crude','naphtha','ethylene','propylene','ldpe','lldpe','hdpe','pp','benzene','sm'];
+const PRODUCT_IDS = ['crude','naphtha','ethylene','propylene','ldpe','lldpe','hdpe','pp','benzene','sm',
+  'butadiene','mlldpe','hdpe_inj','hdpe_pipe','bopp','pp_copo','pp_random','toluene','methanol'];
 const _built = new Set();
 
 function showView(id) {
