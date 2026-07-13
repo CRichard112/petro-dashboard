@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Petro Price Intelligence &mdash; Management Dashboard</title>
+<title>Petro Price Intelligence â€” Management Dashboard</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
@@ -62,9 +62,9 @@
   /* â”€â”€ Mobile â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   #sb-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:149;display:none}
   #sb-overlay.open{display:block}
-  /* Chart container &mdash; fixed height overridden on mobile */
+  /* Chart container â€” fixed height overridden on mobile */
   .chart-wrap{position:relative;height:260px}
-  /* Tab row &mdash; horizontal scroll on mobile, wraps on desktop */
+  /* Tab row â€” horizontal scroll on mobile, wraps on desktop */
   .tab-scroll{display:flex;gap:4px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
   .tab-scroll::-webkit-scrollbar{height:3px}
   .tab-scroll::-webkit-scrollbar-thumb{background:#94a3b8;border-radius:2px}
@@ -84,7 +84,7 @@
     #macro-context{gap:8px!important}
     /* Chart shorter on mobile */
     .chart-wrap{height:200px!important}
-    /* Tab buttons &mdash; bigger touch targets */
+    /* Tab buttons â€” bigger touch targets */
     .tab-btn{padding:8px 12px;font-size:.78rem;white-space:nowrap;flex-shrink:0}
     /* Stat cards compact */
     .stat-grid{grid-template-columns:repeat(3,1fr)!important;gap:6px!important}
@@ -401,7 +401,7 @@
         <div id="overview-date" class="text-xs text-slate-400 text-right"></div>
       </div>
       <div class="disclaimer mb-5">
-        <strong>Decision-support tool &mdash; not a guaranteed price prediction.</strong> Forecasts combine statistical trend analysis with qualitative macro/geopolitical judgment. Market conditions can change rapidly. Always verify with your price data providers before making procurement decisions. <span id="disclaimer-updated" class="font-semibold"></span>
+        <strong>Decision-support tool â€” not a guaranteed price prediction.</strong> Forecasts combine statistical trend analysis with qualitative macro/geopolitical judgment. Market conditions can change rapidly. Always verify with your price data providers before making procurement decisions. <span id="disclaimer-updated" class="font-semibold"></span>
       </div>
       <div id="overview-grid" class="grid grid-cols-2 lg:grid-cols-4 gap-3"></div>
       <div class="mt-6">
@@ -475,7 +475,7 @@
         <div class="card p-5 mb-4">
           <div class="section-title">2. Choose product</div>
           <select id="upload-product" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
-            <option value="">&mdash; select product &mdash;</option>
+            <option value="">â€” select product â€”</option>
             <option value="crude">Crude Oil</option>
             <option value="naphtha">Naphtha</option>
             <option value="ethylene">Ethylene</option>
@@ -499,7 +499,7 @@
         </div>
         <div class="card p-5 mb-4">
           <div class="section-title">3. Upload CSV file</div>
-          <p class="text-xs text-slate-500 mb-3">Required columns: <code class="bg-slate-100 px-1 rounded">date</code>, <code class="bg-slate-100 px-1 rounded">price_avg</code> &mdash; Optional: <code class="bg-slate-100 px-1 rounded">price_low</code>, <code class="bg-slate-100 px-1 rounded">price_high</code>, <code class="bg-slate-100 px-1 rounded">incoterm</code></p>
+          <p class="text-xs text-slate-500 mb-3">Required columns: <code class="bg-slate-100 px-1 rounded">date</code>, <code class="bg-slate-100 px-1 rounded">price_avg</code> â€” Optional: <code class="bg-slate-100 px-1 rounded">price_low</code>, <code class="bg-slate-100 px-1 rounded">price_high</code>, <code class="bg-slate-100 px-1 rounded">incoterm</code></p>
           <p class="text-xs text-slate-500 mb-3">Date format: <code class="bg-slate-100 px-1 rounded">YYYY-MM-DD</code> or <code class="bg-slate-100 px-1 rounded">DD-Mon-YY</code> (e.g. 12-Jun-26). Price unit should match existing series ($/bbl for crude, $/MT for all others).</p>
           <div id="drop-zone" class="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center hover:border-blue-400 transition-colors cursor-pointer" onclick="document.getElementById('file-input').click()">
             <svg class="mx-auto mb-2 text-slate-400" width="32" height="32" fill="none" viewBox="0 0 24 24"><path d="M12 16V8m0 0l-3 3m3-3l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M3 16v1a3 3 0 003 3h12a3 3 0 003-3v-1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -1031,7 +1031,7 @@ const WEEKLY_FORECASTS_DATA={
                  }
 };
 const NEWS_PRELOADED=[];
-const BUILT_AT = "13 Jul 2026 23:53";
+const BUILT_AT = "13 Jul 2026 23:59";
 const PASS_HASH = "c9cf635e0294d81fda792880fb4b7086b3b6ae3e2fdede0c5c9172b18c3270c1"; const AUTH_ENABLED = true;
 </script>
 <script>
@@ -1151,41 +1151,41 @@ const SERIES_DEF = {
   ],
 };
 
-// â”€â”€â”€ HARDCODED FORECASTS (as of 23 Jun 2026 &mdash; conservative, weekly cadence) â”€
+// â”€â”€â”€ HARDCODED FORECASTS (as of 23 Jun 2026 â€” conservative, weekly cadence) â”€
 // range1w = next 7 days, range2w = next 14 days, range4w = next 28 days.
 // Auto-refreshed every Thursday by update_forecasts.ps1 using market-offer
 // price regression + drivers.json news sentiment (see WEEKLY_FORECASTS_DATA below).
 const FORECASTS = {
   crude: {
     range1w:[77,82], range2w:[74,84], range4w:[70,88], confidence:'MEDIUM',
-    trendNote:'Conservative: Brent tracking toward $70&ndash;80 zone as OPEC+ volume additions and Hormuz normalization erase the supply-risk premium. EIA projects $70 by year-end. No price recovery assumed without a demand surprise.',
+    trendNote:'Conservative: Brent tracking toward $70â€“80 zone as OPEC+ volume additions and Hormuz normalization erase the supply-risk premium. EIA projects $70 by year-end. No price recovery assumed without a demand surprise.',
     dataAdjPct:-12, qualAdjPct:0,
     drivers:[
-      {type:'supply', dir:'neg', text:'OPEC+ raised output 188 kbd in June; effective group output estimated 300&ndash;400 kbd above stated target &mdash; EIA projects Brent averaging $85&ndash;91 in 2026 and declining toward $70 by year-end'},
-      {type:'supply', dir:'pos', text:'Hormuz ceasefire advancing; physical supply restoration reducing war premium from $107 April peak &mdash; any breakdown in talks would spike crude sharply'},
+      {type:'supply', dir:'neg', text:'OPEC+ raised output 188 kbd in June; effective group output estimated 300â€“400 kbd above stated target â€” EIA projects Brent averaging $85â€“91 in 2026 and declining toward $70 by year-end'},
+      {type:'supply', dir:'pos', text:'Hormuz ceasefire advancing; physical supply restoration reducing war premium from $107 April peak â€” any breakdown in talks would spike crude sharply'},
       {type:'demand', dir:'neg', text:'China crude imports rebounding from 8-year lows but pace below expectations; refiners restarting cut runs cautiously on margin concerns'},
       {type:'plant',  dir:'neg', text:'Middle East refinery restarts post-Hormuz adding refined product supply, moderating incremental crude throughput demand from key regional buyers'},
     ],
   },
   naphtha: {
     range1w:[640,680], range2w:[620,700], range4w:[590,720], confidence:'MEDIUM',
-    trendNote:'Conservative: naphtha tracking crude lower with no floor from cracker demand &mdash; spread still below $250/mt breakeven. Hormuz normalization lengthens supply materially in Q3. No recovery assumed until cracker economics turn positive.',
+    trendNote:'Conservative: naphtha tracking crude lower with no floor from cracker demand â€” spread still below $250/mt breakeven. Hormuz normalization lengthens supply materially in Q3. No recovery assumed until cracker economics turn positive.',
     dataAdjPct:-10, qualAdjPct:0,
     drivers:[
       {type:'supply', dir:'neg', text:'Korea and Japan securing alternative supply via Kazakhstan, Oman, Saudi non-Hormuz routes; naphtha availability lengthening as Hormuz reopens'},
-      {type:'demand', dir:'neg', text:'NEA steam crackers running below capacity; ethylene-naphtha spread at ~$248/mt vs $250/mt breakeven &mdash; spot naphtha demand suppressed'},
+      {type:'demand', dir:'neg', text:'NEA steam crackers running below capacity; ethylene-naphtha spread at ~$248/mt vs $250/mt breakeven â€” spot naphtha demand suppressed'},
       {type:'feedstock', dir:'pos', text:'Crude price decline from $107 to ~$80/bbl improving refinery economics; naphtha crack spread partially supported'},
       {type:'plant',  dir:'neg', text:'Korea and Japan crackers on reduced run rates due to negative margins; extended turnarounds further limiting near-term spot naphtha demand'},
     ],
   },
   ethylene: {
     range1w:[815,885], range2w:[780,920], range4w:[740,960], confidence:'LOW',
-    trendNote:'Conservative: no floor signal &mdash; ~2.5 MT new mid-2026 capacity, crackers uneconomic, downstream need-only. Q3 feedstock cost relief from naphtha may slow the decline but is unlikely to reverse the trend.',
+    trendNote:'Conservative: no floor signal â€” ~2.5 MT new mid-2026 capacity, crackers uneconomic, downstream need-only. Q3 feedstock cost relief from naphtha may slow the decline but is unlikely to reverse the trend.',
     dataAdjPct:-15, qualAdjPct:+2,
     drivers:[
       {type:'supply', dir:'neg', text:'~2.5 MT new ethylene capacity in China and Middle East coming online mid-2026, adding directly to export oversupply across Asia'},
       {type:'demand', dir:'neg', text:'Post-panic buying, China PE/derivative demand reverted to need-only basis; downstream processors fully destocked, no restocking incentive'},
-      {type:'plant',  dir:'neg', text:'Asia cracker spreads at ~$248/mt vs $250/mt breakeven &mdash; cracker economic incentive to buy spot rather than produce; several SEA/NEA units on extended turnaround'},
+      {type:'plant',  dir:'neg', text:'Asia cracker spreads at ~$248/mt vs $250/mt breakeven â€” cracker economic incentive to buy spot rather than produce; several SEA/NEA units on extended turnaround'},
       {type:'feedstock', dir:'pos', text:'Naphtha cost declining with crude softness; Hormuz normalization expected to bring feedstock cost relief in Q3, partially restoring cracker economics'},
     ],
   },
@@ -1196,7 +1196,7 @@ const FORECASTS = {
     drivers:[
       {type:'supply', dir:'neg', text:'China PDH plants running competitively on propane; domestic propylene supply building, reducing import demand and limiting upside'},
       {type:'demand', dir:'neg', text:'PP demand in China and SEA below seasonal expectations; polypropylene buyers deferring spot propylene purchases'},
-      {type:'plant',  dir:'pos', text:'PDH economics competitive on current propane pricing; PDH-based producers protecting margins &mdash; limits distress-priced export volumes from China'},
+      {type:'plant',  dir:'pos', text:'PDH economics competitive on current propane pricing; PDH-based producers protecting margins â€” limits distress-priced export volumes from China'},
       {type:'feedstock', dir:'pos', text:'Lower naphtha costs from crude decline reducing cracker-based propylene cost floor; limits the magnitude of further price deterioration'},
     ],
   },
@@ -1207,8 +1207,8 @@ const FORECASTS = {
     drivers:[
       {type:'supply', dir:'neg', text:'Chinese LDPE producers increasing export volumes to clear domestic inventory overhang built in Q1; offer levels pressured'},
       {type:'demand', dir:'neg', text:'Flexible packaging demand softness in SEA; brand owners and converters on need-only purchasing, deferring inventory build'},
-      {type:'feedstock', dir:'pos', text:'Ethylene feedstock cost declining with crude softness; limits further producer margin deterioration &mdash; acts as partial price floor'},
-      {type:'supply', dir:'pos', text:'Middle East LDPE producers maintaining export floor prices; no distress pricing observed &mdash; disciplined pricing from ME sellers'},
+      {type:'feedstock', dir:'pos', text:'Ethylene feedstock cost declining with crude softness; limits further producer margin deterioration â€” acts as partial price floor'},
+      {type:'supply', dir:'pos', text:'Middle East LDPE producers maintaining export floor prices; no distress pricing observed â€” disciplined pricing from ME sellers'},
     ],
   },
   lldpe: {
@@ -1216,20 +1216,20 @@ const FORECASTS = {
     trendNote:'Conservative: US Gulf Coast export surge and China supply lengthening create double structural pressure. Downside risk to sub-$1,000 not ruled out in 2m horizon. No demand catalyst visible to absorb the supply overhang.',
     dataAdjPct:-9, qualAdjPct:0,
     drivers:[
-      {type:'supply', dir:'neg', text:'US LLDPE export surge from Gulf Coast &mdash; high inventory competing directly with Asian grades across SEA markets, particularly film grades'},
+      {type:'supply', dir:'neg', text:'US LLDPE export surge from Gulf Coast â€” high inventory competing directly with Asian grades across SEA markets, particularly film grades'},
       {type:'supply', dir:'neg', text:'China PE supply lengthening as panic-buying reverts to need-only basis; domestic LLDPE inventories rebuilding and adding export pressure'},
-      {type:'demand', dir:'neg', text:'Film converters in SEA facing margin pressure; demand tracking below seasonal norms &mdash; speculative buying largely absent'},
+      {type:'demand', dir:'neg', text:'Film converters in SEA facing margin pressure; demand tracking below seasonal norms â€” speculative buying largely absent'},
       {type:'feedstock', dir:'pos', text:'Weaker ethylene/naphtha cost environment lowering offer levels; feedstock cost relief from Hormuz normalization expected in Q3'},
     ],
   },
   hdpe: {
     range1w:[1130,1190], range2w:[1100,1220], range4w:[1070,1250], confidence:'MEDIUM',
-    trendNote:'Conservative: Saudi/UAE active price cutting to defend share, China grade-switching adding low-value supply, construction demand weak. No near-term floor signal &mdash; expect continued gradual erosion.',
+    trendNote:'Conservative: Saudi/UAE active price cutting to defend share, China grade-switching adding low-value supply, construction demand weak. No near-term floor signal â€” expect continued gradual erosion.',
     dataAdjPct:-8, qualAdjPct:0,
     drivers:[
       {type:'supply', dir:'neg', text:'Saudi and UAE producers cutting export prices to defend Asian market share against US and Chinese competition; offer levels declining'},
       {type:'demand', dir:'neg', text:'China HDPE demand restrained; construction-linked pipe grades particularly weak given ongoing property sector overhang'},
-      {type:'plant',  dir:'pos', text:'Planned turnarounds at SEA and Korean crackers temporarily reducing HDPE spot availability &mdash; near-term supply tightening'},
+      {type:'plant',  dir:'pos', text:'Planned turnarounds at SEA and Korean crackers temporarily reducing HDPE spot availability â€” near-term supply tightening'},
       {type:'plant',  dir:'neg', text:'China flexible-density PE lines switching to small blow-mold HDPE grades (below 5L); increasing supply of low-value grades, particularly in South China'},
     ],
   },
@@ -1238,10 +1238,10 @@ const FORECASTS = {
     trendNote:'Conservative: China structural export surge (~4.8 Mt annualized, +55% vs 2025) is dominant and shows no sign of abating. SEA buyers have no urgency to restock. PDH floor limits freefall but recovery requires a demand catalyst absent in current outlook.',
     dataAdjPct:-7, qualAdjPct:0,
     drivers:[
-      {type:'supply', dir:'neg', text:'China PP exports running at ~4.8 Mt annualized in 2026 vs 3.1 Mt full-year 2025 &mdash; a 55% surge; PP capacity at 120% of domestic demand'},
+      {type:'supply', dir:'neg', text:'China PP exports running at ~4.8 Mt annualized in 2026 vs 3.1 Mt full-year 2025 â€” a 55% surge; PP capacity at 120% of domestic demand'},
       {type:'supply', dir:'neg', text:'China PE supply also lengthening as panic-buying stops; structural export surplus in polymers a persistent bearish headwind for SEA through H2 2026'},
       {type:'demand', dir:'neg', text:'Automotive PP demand in SEA and India slowing; OEM production schedules weakening with softer regional vehicle sales'},
-      {type:'plant',  dir:'pos', text:'PDH economics competitive in China; PDH-based producers protecting margins &mdash; limits the volume of distress-priced export cargoes'},
+      {type:'plant',  dir:'pos', text:'PDH economics competitive in China; PDH-based producers protecting margins â€” limits the volume of distress-priced export cargoes'},
     ],
   },
   benzene: {
@@ -1251,8 +1251,8 @@ const FORECASTS = {
     drivers:[
       {type:'feedstock', dir:'neg', text:'Naphtha/crude decline removing cost support; benzene margins negative at multiple Asian crackers, limiting domestic production incentive'},
       {type:'supply',    dir:'neg', text:'Korea and Japan aromatics output elevated; benzene export push into SEA/Taiwan as domestic derivative demand remains soft'},
-      {type:'demand',    dir:'neg', text:'Styrene monomer and derivative demand weak; PS/ABS buyers on need-only basis &mdash; no restocking incentive for benzene in Asia'},
-      {type:'plant',     dir:'pos', text:'Some cracker turnarounds in NEA limiting benzene co-product output &mdash; partial offset to supply pressure'},
+      {type:'demand',    dir:'neg', text:'Styrene monomer and derivative demand weak; PS/ABS buyers on need-only basis â€” no restocking incentive for benzene in Asia'},
+      {type:'plant',     dir:'pos', text:'Some cracker turnarounds in NEA limiting benzene co-product output â€” partial offset to supply pressure'},
     ],
   },
   sm: {
@@ -1260,7 +1260,7 @@ const FORECASTS = {
     trendNote:'Conservative: SM CFR SEA at ~$1,068/MT (19-Jun), down ~18% from mid-May. Double pressure from weak benzene feedstock costs and soft PS/ABS demand. China SM capacity additions create structural oversupply through H2 2026.',
     dataAdjPct:-12, qualAdjPct:0,
     drivers:[
-      {type:'feedstock', dir:'pos', text:'Benzene feedstock softening materially &mdash; lower SM production cost partially floors margins and reduces distress-selling pressure'},
+      {type:'feedstock', dir:'pos', text:'Benzene feedstock softening materially â€” lower SM production cost partially floors margins and reduces distress-selling pressure'},
       {type:'supply',    dir:'neg', text:'China SM capacity additions (~3-4 MT new units 2025-26) creating structural export surplus; China SM tonnes filling Asian CFR markets'},
       {type:'demand',    dir:'neg', text:'PS and ABS demand weak in SEA and China; downstream converters on strict need-only purchasing, deferring inventory rebuilds'},
       {type:'plant',     dir:'neg', text:'Multiple new China SM units ramping up in Q2-Q3 2026; incremental tonnes pressuring CFR SEA and China spot prices'},
@@ -1296,7 +1296,7 @@ const FORECASTS = {
   },
   hdpe_pipe: {
     range1w:[1190,1270], range2w:[1150,1310], range4w:[1110,1350], confidence:'LOW',
-    trendNote:'Conservative: HDPE pipe grades linked to infrastructure demand &mdash; China property overhang and regional capex caution limiting recovery. Saudi/UAE export competition adding supply.',
+    trendNote:'Conservative: HDPE pipe grades linked to infrastructure demand â€” China property overhang and regional capex caution limiting recovery. Saudi/UAE export competition adding supply.',
     dataAdjPct:-6, qualAdjPct:0,
     drivers:[
       {type:'demand',    dir:'neg', text:'Construction-linked pipe demand weak in China and SEA; property sector overhang suppressing infrastructure resin consumption'},
@@ -1324,7 +1324,7 @@ const FORECASTS = {
   },
   pp_random: {
     range1w:[1150,1230], range2w:[1110,1260], range4w:[1070,1300], confidence:'LOW',
-    trendNote:'Conservative: PP random grades at a premium over homopolymer; pressure from Chinese copolymer oversupply. Packaging demand soft &mdash; no near-term recovery catalyst.',
+    trendNote:'Conservative: PP random grades at a premium over homopolymer; pressure from Chinese copolymer oversupply. Packaging demand soft â€” no near-term recovery catalyst.',
     dataAdjPct:-5, qualAdjPct:0,
     drivers:[
       {type:'supply',    dir:'neg', text:'China PP copolymer and random grades increasing export share in SEA; premium compression vs homopolymer narrowing'},
@@ -1568,8 +1568,8 @@ function _buildDriverCard(d, pid, idx) {
   const sources = _DRIVER_SOURCES[pid] || ['ICIS','Reuters'];
   const src     = sources[idx % sources.length];
   const srcUrl  = _SOURCE_URLS[src] || 'https://www.icis.com/explore/resources/news/';
-  // Split text into headline (before first &mdash; or ;) and body
-  const cut     = d.text.search(/\s[&mdash;;]\s/);
+  // Split text into headline (before first â€” or ;) and body
+  const cut     = d.text.search(/\s[â€”;]\s/);
   const headline = (cut > 10 && cut < 110) ? d.text.slice(0, cut).trim() : d.text.slice(0, 72).trim() + (d.text.length > 72 ? 'â€¦' : '');
   const body     = (cut > 10 && cut < 110) ? d.text.slice(cut + 2).trim() : d.text;
   const impactCls = d.dir === 'pos'
@@ -1598,7 +1598,7 @@ function _buildDriverCard(d, pid, idx) {
 }
 
 function fmtPrice(v, unit) {
-  if (!v && v!==0) return '&mdash;';
+  if (!v && v!==0) return 'â€”';
   return unit==='$/bbl' ? `$${v.toFixed(2)}` : `$${Math.round(v).toLocaleString()}`;
 }
 
@@ -1609,8 +1609,8 @@ function buildOverview() {
     const latest  = getLatest(p.id);
     const ch      = get4wChange(p.id);
     const fc      = FORECASTS[p.id];
-    if (!latest) return `<div class="card p-4"><p class="text-sm text-slate-400">${p.name} &mdash; no data</p></div>`;
-    const chStr   = ch ? `${ch.pct>=0?'+':''}${ch.pct.toFixed(1)}%` : '&mdash;';
+    if (!latest) return `<div class="card p-4"><p class="text-sm text-slate-400">${p.name} â€” no data</p></div>`;
+    const chStr   = ch ? `${ch.pct>=0?'+':''}${ch.pct.toFixed(1)}%` : 'â€”';
     const chClass = ch ? (ch.pct>1?'text-emerald-600 font-semibold':ch.pct<-1?'text-red-500 font-semibold':'text-slate-500') : 'text-slate-500';
     const arrow   = ch ? trendArrow(ch.pct) : '';
     const unitLabel = latest.unit || p.unit;
@@ -1626,7 +1626,7 @@ function buildOverview() {
       <div class="border-t border-slate-100 pt-3">
         <div class="text-xs text-slate-500 mb-1 font-medium">Weekly Forecast (next 7 days)</div>
         <div class="flex items-center gap-2 mb-1">
-          <div class="text-sm font-bold text-[#0059A8]">$${fc.range1w[0]}&ndash;$${fc.range1w[1]}</div>
+          <div class="text-sm font-bold text-[#0059A8]">$${fc.range1w[0]}â€“$${fc.range1w[1]}</div>
           <span class="text-xs text-slate-400">${unitLabel}</span>
         </div>
         <div class="range-bar w-full" title="Forecast range">
@@ -1704,7 +1704,7 @@ function buildProductView(pid) {
             <div class="tab-scroll" id="tabs-${pid}">${tabsHtml}</div>
           </div>
           <div class="chart-wrap"><canvas id="chart-${pid}"></canvas></div>
-          <p class="text-xs text-slate-400 mt-2">Shaded band = weekly low&ndash;high range where available. Source: <span id="src-label-${pid}">${defs[0]?.label||''}</span></p>
+          <p class="text-xs text-slate-400 mt-2">Shaded band = weekly lowâ€“high range where available. Source: <span id="src-label-${pid}">${defs[0]?.label||''}</span></p>
         </div>
         ${_buildDealsHtml(pid)}
       </div>
@@ -1714,7 +1714,7 @@ function buildProductView(pid) {
       </div>
     </div>
     <div class="card p-4">
-      <div class="text-sm font-semibold text-slate-700 mb-3">Recent Prices &mdash; Source Comparison <span class="text-xs font-normal text-slate-400 ml-1">(last 8 data points per source)</span></div>
+      <div class="text-sm font-semibold text-slate-700 mb-3">Recent Prices â€” Source Comparison <span class="text-xs font-normal text-slate-400 ml-1">(last 8 data points per source)</span></div>
       ${buildComparisonTable(pid)}
     </div>
     <div class="disclaimer mt-4">
@@ -1731,19 +1731,19 @@ function buildStatCards(pid) {
   const fc     = FORECASTS[pid];
   const p      = PRODUCTS.find(x=>x.id===pid);
   const unit   = latest?.unit || p.unit;
-  const chPct  = ch ? ch.pct.toFixed(1)+'%' : '&mdash;';
+  const chPct  = ch ? ch.pct.toFixed(1)+'%' : 'â€”';
   const chClass = ch ? (ch.pct>0?'text-emerald-600':'text-red-500') : 'text-slate-500';
   const tf = buildTrendForecast(pid);
-  const r2str = tf ? `${(tf.r2*100).toFixed(0)}%` : '&mdash;';
+  const r2str = tf ? `${(tf.r2*100).toFixed(0)}%` : 'â€”';
   return `
     <div class="card p-2 sm:p-4">
       <div class="text-xs text-slate-400 font-medium uppercase tracking-wide mb-1">Latest Price</div>
-      <div class="text-base sm:text-2xl font-bold text-slate-900">${latest ? fmtPrice(latest.price, unit) : '&mdash;'}</div>
+      <div class="text-base sm:text-2xl font-bold text-slate-900">${latest ? fmtPrice(latest.price, unit) : 'â€”'}</div>
       <div class="text-xs text-slate-400 mt-1 truncate">${latest?.date||''}</div>
     </div>
     <div class="card p-2 sm:p-4">
       <div class="text-xs text-slate-400 font-medium uppercase tracking-wide mb-1">4-Week Change</div>
-      <div class="text-base sm:text-2xl font-bold ${chClass}">${ch ? (ch.pct>=0?'+':'')+chPct : '&mdash;'}</div>
+      <div class="text-base sm:text-2xl font-bold ${chClass}">${ch ? (ch.pct>=0?'+':'')+chPct : 'â€”'}</div>
       <div class="text-xs text-slate-400 mt-1 truncate">${ch ? fmtPrice(ch.abs,unit) : ''}</div>
     </div>
     <div class="card p-2 sm:p-4">
@@ -1774,8 +1774,8 @@ function buildForecastPanel(pid) {
     +   '<div class="flex items-center justify-between mb-2">' + confBadge(fc.confidence)
     +   '<div class="text-xs text-slate-400">Data: ' + dataContrib + ' &nbsp; News: ' + qualContrib + '</div></div>'
     +   '<div class="text-xs text-slate-500 font-medium mb-1">Base-case range</div>'
-    +   '<div class="text-base font-bold text-[#0059A8]">$' + fc.range1w[0].toLocaleString() + ' &ndash; $' + fc.range1w[1].toLocaleString() + ' <span class="text-xs font-normal text-slate-400">' + p.unit + ' &middot; 1W</span></div>'
-    +   '<div class="text-xs text-slate-400 mt-1">2W: $' + fc.range2w[0].toLocaleString() + '&ndash;$' + fc.range2w[1].toLocaleString() + ' &nbsp;|&nbsp; 4W: $' + fc.range4w[0].toLocaleString() + '&ndash;$' + fc.range4w[1].toLocaleString() + '</div>'
+    +   '<div class="text-base font-bold text-[#0059A8]">$' + fc.range1w[0].toLocaleString() + ' â€“ $' + fc.range1w[1].toLocaleString() + ' <span class="text-xs font-normal text-slate-400">' + p.unit + ' &middot; 1W</span></div>'
+    +   '<div class="text-xs text-slate-400 mt-1">2W: $' + fc.range2w[0].toLocaleString() + 'â€“$' + fc.range2w[1].toLocaleString() + ' &nbsp;|&nbsp; 4W: $' + fc.range4w[0].toLocaleString() + 'â€“$' + fc.range4w[1].toLocaleString() + '</div>'
     +   '<p class="text-xs text-slate-500 mt-2 leading-relaxed border-t border-slate-200 pt-2">' + fc.trendNote + '</p>'
     + '</div>'
     + driverCards
@@ -1798,10 +1798,10 @@ function buildComparisonTable(pid) {
   const rows = sortedDates.reverse().map(dateLabel => {
     const cells = seriesData.map(pts => {
       const pt = pts.find(p=>p.label===dateLabel);
-      if (!pt) return '<td class="px-3 py-2 text-right text-xs text-slate-300">&mdash;</td>';
+      if (!pt) return '<td class="px-3 py-2 text-right text-xs text-slate-300">â€”</td>';
       const lo = pt.low !== pt.avg ? `<span class="text-slate-400 text-xs">${Math.round(pt.low)}</span>` : '';
       const hi = pt.high !== pt.avg ? `<span class="text-slate-400 text-xs">${Math.round(pt.high)}</span>` : '';
-      const band = (lo||hi) ? ` <span class="text-slate-300 text-xs">(${lo}&ndash;${hi})</span>` : '';
+      const band = (lo||hi) ? ` <span class="text-slate-300 text-xs">(${lo}â€“${hi})</span>` : '';
       return `<td class="px-3 py-2 text-right text-xs font-mono font-medium text-slate-700">${Math.round(pt.avg)}${band}</td>`;
     }).join('');
     return `<tr class="border-t border-slate-100 hover:bg-slate-50"><td class="px-3 py-2 text-xs text-slate-500 font-medium">${dateLabel}</td>${cells}</tr>`;
@@ -2008,7 +2008,7 @@ function updateUploadedList() {
     <div class="flex items-center justify-between py-2 border-b border-slate-100 last:border-0">
       <div>
         <span class="badge badge-source mr-1">${u.src}</span>
-        <span class="text-sm font-medium">${u.prod||'&mdash;'}</span>
+        <span class="text-sm font-medium">${u.prod||'â€”'}</span>
         <span class="text-xs text-slate-400 ml-2">${u.file} &bull; ${u.pts.length} pts</span>
       </div>
     </div>`).join('');
@@ -2098,17 +2098,17 @@ const _ORIG_DM = {chinese:'China',korean:'Korea',japanese:'Japan',saudi:'Saudi A
 function _extractDealRows(txt) {
   const t = txt;
   // Origin: explicit adjective ("Chinese-origin"), producing role ("Korean producer"), or FOB only
-  // Do NOT fall back to bare country keywords &mdash; China/Korea/Japan appear as destinations too
-  const oAM = t.match(/\b(Chinese|Korean|Japanese|Saudi|European|American|Indian|Middle\s*Eastern)\s*[-&ndash;]?\s*origin\b/i)
+  // Do NOT fall back to bare country keywords â€” China/Korea/Japan appear as destinations too
+  const oAM = t.match(/\b(Chinese|Korean|Japanese|Saudi|European|American|Indian|Middle\s*Eastern)\s*[-â€“]?\s*origin\b/i)
     || t.match(/\b(Chinese|Korean|Japanese|Saudi|Indian|American|European)\s+(?:producer|supplier|seller|exporter)\b/i);
   const oFM = !oAM && t.match(/\bFOB\s+(China|Korea|Japan|USGC|US\s*Gulf|Middle\s*East|Saudi\s*Arabia|Europe|India|Taiwan)/i);
-  // Only use unambiguous export-only regions as fallback (not China/Korea/Japan &mdash; too ambiguous)
+  // Only use unambiguous export-only regions as fallback (not China/Korea/Japan â€” too ambiguous)
   const oFall = !oAM && !oFM && t.match(/\b(USGC|US\s+Gulf|Middle\s+East|Saudi\s+Arabia|Europe)\b/i);
   const rawO = oAM ? oAM[1] : (oFM ? oFM[1] : (oFall ? oFall[1] : ''));
   const origin = rawO ? (_ORIG_DM[rawO.toLowerCase()] || rawO.trim()) : '-';
-  // Price: strict (with /t unit) then loose ($X without unit) &mdash; both within context window
-  const PRICE_STRICT = /\$?\s*(\d{1,4}(?:[,\.]\d{3})?(?:\s*[-&ndash;]\s*\d{1,4}(?:[,\.]\d{3})?)?)\s*\/\s*(?:mt\b|t(?!\w)|tonne\b)/i;
-  const PRICE_LOOSE  = /\$\s*(\d{3,4}(?:[,\.]\d{3})?(?:\s*[-&ndash;]\s*\d{3,4}(?:[,\.]\d{3})?)?)/i;
+  // Price: strict (with /t unit) then loose ($X without unit) â€” both within context window
+  const PRICE_STRICT = /\$?\s*(\d{1,4}(?:[,\.]\d{3})?(?:\s*[-â€“]\s*\d{1,4}(?:[,\.]\d{3})?)?)\s*\/\s*(?:mt\b|t(?!\w)|tonne\b)/i;
+  const PRICE_LOOSE  = /\$\s*(\d{3,4}(?:[,\.]\d{3})?(?:\s*[-â€“]\s*\d{3,4}(?:[,\.]\d{3})?)?)/i;
   // Find each "incoterm Destination" pair, look Â±80 chars for nearest price
   const DEST_RE = /\b(cfr|cif|fob|fca|dap)\s+(SE\s*Asia|south[\s-]*east\s+Asia|SEA|NE\s*Asia|north[\s-]*east\s+Asia|NEA|South\s*Asia|India|China|Japan|Korea|Singapore|Vietnam|Indonesia|Thailand|Malaysia|Taiwan)\b/gi;
   const rows = [];
@@ -2337,6 +2337,33 @@ function _renderNewsItems() {
   });
 })();
 
+// â”€â”€â”€ RSS PROXY HELPER (tries 3 proxies in order, returns parsed XML) â”€â”€â”€â”€â”€â”€â”€â”€â”€
+async function _fetchRSSXml(feed) {
+  const proxies = [
+    u => ({ href: 'https://corsproxy.io/?' + encodeURIComponent(u), json: false }),
+    u => ({ href: 'https://api.allorigins.win/get?url=' + encodeURIComponent(u), json: true }),
+    u => ({ href: 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u), json: false }),
+  ];
+  let lastErr = 'All proxies failed';
+  for (const p of proxies) {
+    try {
+      const cfg  = p(feed);
+      const ctrl = new AbortController();
+      const tid  = setTimeout(() => ctrl.abort(), 9000);
+      const res  = await fetch(cfg.href, { signal: ctrl.signal });
+      clearTimeout(tid);
+      if (!res.ok) { lastErr = 'HTTP ' + res.status; continue; }
+      const text = cfg.json ? (await res.json()).contents : await res.text();
+      if (!text || text.length < 50) { lastErr = 'Empty response'; continue; }
+      const xml  = new DOMParser().parseFromString(text, 'text/xml');
+      if (xml.querySelector('parsererror')) { lastErr = 'Invalid XML'; continue; }
+      if (!xml.querySelectorAll('item').length) { lastErr = 'No items in feed'; continue; }
+      return xml;
+    } catch(e) { lastErr = (e.name === 'AbortError') ? 'Timeout (9s)' : (e.message || String(e)); }
+  }
+  throw new Error(lastErr);
+}
+
 // â”€â”€â”€ OVERVIEW NEWS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 let _ovFeed    = 'https://oilprice.com/rss/main';
 let _ovInited  = false;
@@ -2358,7 +2385,6 @@ function ovNewsInit() {
 
 async function ovNewsFetch(feed, force) {
   const listEl = document.getElementById('ov-news-list');
-  const tsEl   = document.getElementById('ov-news-ts');
   if (!force) {
     try {
       const raw = localStorage.getItem(_LN_CACHE_LS + feed);
@@ -2368,18 +2394,12 @@ async function ovNewsFetch(feed, force) {
       }
     } catch {}
   }
-  if (listEl) listEl.innerHTML = '<div class="col-span-3 text-sm text-slate-400 text-center py-6"><span class="spin mr-1">â†»</span> Loading headlinesâ€¦</div>';
+  if (listEl) listEl.innerHTML = '<div class="col-span-3 text-sm text-slate-400 text-center py-6"><span style="display:inline-block;animation:spin .9s linear infinite">&#8635;</span>&nbsp;Loading headlines...</div>';
   try {
-    const proxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent(feed);
-    const res   = await fetch(proxy);
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const data  = await res.json();
-    if (!data.contents) throw new Error('No content');
-    const xml   = (new DOMParser()).parseFromString(data.contents, 'text/xml');
-    const chan  = xml.querySelector('channel');
+    const xml   = await _fetchRSSXml(feed);
+    const chan   = xml.querySelector('channel');
     const feedTitle = chan ? (chan.querySelector('title')?.textContent || '') : '';
     const nodes = Array.from(xml.querySelectorAll('item')).slice(0, 9);
-    if (!nodes.length) throw new Error('No articles');
     const items = nodes.map(n => {
       const get  = tag => n.querySelector(tag)?.textContent?.trim() || '';
       const linkEl = n.querySelector('link');
@@ -2390,7 +2410,7 @@ async function ovNewsFetch(feed, force) {
     try { localStorage.setItem(_LN_CACHE_LS + feed, JSON.stringify({items, ts, feedTitle})); } catch {}
     _ovNewsRender(items, ts, feedTitle);
   } catch(e) {
-    if (listEl) listEl.innerHTML = '<div class="col-span-3 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-xl p-4">Could not load feed: ' + e.message + '. Try another source.</div>';
+    if (listEl) listEl.innerHTML = '<div class="col-span-3 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-xl p-4">Could not load feed: ' + e.message + '. Try another source or Refresh.</div>';
   }
 }
 
@@ -2405,7 +2425,7 @@ function _ovNewsRender(items, ts, feedTitle) {
   listEl.innerHTML = items.map(a => {
     const ago  = _lnAgo(new Date(a.pubDate));
     const src  = a.author || feedTitle || '';
-    const desc = (a.description || '').slice(0, 100) + ((a.description||'').length > 100 ? 'â€¦' : '');
+    const desc = (a.description || '').slice(0, 100) + ((a.description||'').length > 100 ? '...' : '');
     return '<a href="' + a.link + '" target="_blank" rel="noopener" class="card p-4 block hover:shadow-md transition-shadow group">'
       + '<div class="flex items-center gap-2 mb-2 flex-wrap">'
       +   (src ? '<span class="badge badge-source text-xs">' + src + '</span>' : '')
@@ -2417,7 +2437,7 @@ function _ovNewsRender(items, ts, feedTitle) {
   }).join('');
 }
 
-// â”€â”€â”€ LIVE NEWS (RSS via rss2json proxy &mdash; no API key needed) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â”€â”€â”€ LIVE NEWS (RSS via rss2json proxy â€” no API key needed) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const _LN_CACHE_LS = 'petro_ln_rss_';
 const _LN_TTL      = 20 * 60 * 1000; // 20-min cache
 let   _lnFeed      = 'https://oilprice.com/rss/main';
@@ -2454,23 +2474,16 @@ async function lnFetch(feed, force) {
     const c = _lnCacheGet(feed);
     if (c) { _lnRender(c.items, c.ts, c.feedTitle); return; }
   }
-  listEl.innerHTML = '<p class="text-sm text-slate-400 text-center py-8"><span class="spin mr-1">â†»</span> Loading headlinesâ€¦</p>';
+  listEl.innerHTML = '<p class="text-sm text-slate-400 text-center py-8"><span style="display:inline-block;animation:spin .9s linear infinite">&#8635;</span>&nbsp;Loading headlines...</p>';
   if (btn) btn.disabled = true;
   try {
-    const proxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent(feed);
-    const res   = await fetch(proxy);
-    if (!res.ok) throw new Error('Proxy error ' + res.status);
-    const data  = await res.json();
-    if (!data.contents) throw new Error('No content returned');
-    // Parse RSS XML in the browser
-    const xml   = (new DOMParser()).parseFromString(data.contents, 'text/xml');
+    const xml   = await _fetchRSSXml(feed);
     const chan  = xml.querySelector('channel');
     const feedTitle = chan ? (chan.querySelector('title')?.textContent || '') : '';
     const nodes = Array.from(xml.querySelectorAll('item')).slice(0, 15);
     if (!nodes.length) throw new Error('Feed returned no articles');
     const items = nodes.map(n => {
       const get = tag => n.querySelector(tag)?.textContent?.trim() || '';
-      // <link> in RSS is text-node sibling, not always querySelector-able
       const linkEl  = n.querySelector('link');
       const link    = (linkEl && linkEl.textContent.trim())
                       ? linkEl.textContent.trim()
@@ -2516,7 +2529,7 @@ function _lnRender(items, ts, feedTitle) {
     const ago  = pub ? _lnAgo(pub) : '';
     const src  = a.author || feedTitle || '';
     const desc = (a.description || '').replace(/<[^>]*>/g,'').trim().slice(0,160);
-    const tail = (a.description||'').replace(/<[^>]*>/g,'').trim().length > 160 ? 'â€¦' : '';
+    const tail = (a.description||'').replace(/<[^>]*>/g,'').trim().length > 160 ? '...' : '';
     const img  = a.thumbnail
       ? '<img src="' + a.thumbnail + '" alt="" class="w-16 h-16 rounded-lg object-cover shrink-0 ml-3" loading="lazy" onerror="this.style.display=\'none\'">'
       : '';
