@@ -408,6 +408,31 @@
         <div class="section-title">Macro &amp; Geopolitical Context <span class="text-xs font-normal text-slate-400 ml-2">Key factors driving current forecasts</span></div>
         <div id="macro-context" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
       </div>
+      <div class="mt-6">
+        <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+          <div class="section-title mb-0">Petrochemical Market News</div>
+          <div class="flex items-center gap-3">
+            <span id="ov-news-ts" class="text-xs text-slate-400"></span>
+            <button onclick="ovNewsRefresh()" class="flex items-center gap-1 text-xs font-semibold text-[#0059A8] hover:underline">
+              <svg width="12" height="12" fill="none" viewBox="0 0 24 24"><path d="M4 4v5h5M20 20v-5h-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 9A8 8 0 0 0 5.64 5.64M4 15a8 8 0 0 0 14.36 3.36" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+              Refresh
+            </button>
+          </div>
+        </div>
+        <div class="flex gap-2 flex-wrap mb-3" id="ov-news-cats">
+          <button class="cat-btn active" data-feed="https://oilprice.com/rss/main" onclick="ovNewsCat(this)">OilPrice.com</button>
+          <button class="cat-btn" data-feed="https://www.icis.com/feed/" onclick="ovNewsCat(this)">ICIS</button>
+          <button class="cat-btn" data-feed="https://commoplast.com/feed/" onclick="ovNewsCat(this)">Commoplast</button>
+          <button class="cat-btn" data-feed="https://www.plasticsnews.com/feed" onclick="ovNewsCat(this)">Plastics News</button>
+          <button class="cat-btn" data-feed="https://www.eia.gov/rss/news.xml" onclick="ovNewsCat(this)">EIA</button>
+          <button class="cat-btn" data-feed="https://www.cnbc.com/id/10000934/device/rss/rss.html" onclick="ovNewsCat(this)">CNBC Energy</button>
+          <button class="cat-btn" data-feed="https://cen.acs.org/rss/home.xml" onclick="ovNewsCat(this)">C&amp;EN</button>
+        </div>
+        <div id="ov-news-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+        <div class="mt-3 text-center">
+          <button onclick="showView('news')" class="text-xs text-[#0059A8] hover:underline">More sources in News &amp; References &rarr;</button>
+        </div>
+      </div>
     </div>
 
     <!-- PRODUCT VIEWS (generated dynamically) -->
@@ -1006,7 +1031,7 @@ const WEEKLY_FORECASTS_DATA={
                  }
 };
 const NEWS_PRELOADED=[];
-const BUILT_AT = "13 Jul 2026 23:30";
+const BUILT_AT = "13 Jul 2026 23:48";
 const PASS_HASH = "c9cf635e0294d81fda792880fb4b7086b3b6ae3e2fdede0c5c9172b18c3270c1"; const AUTH_ENABLED = true;
 </script>
 <script>
@@ -2312,6 +2337,86 @@ function _renderNewsItems() {
   });
 })();
 
+// â”€â”€â”€ OVERVIEW NEWS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+let _ovFeed    = 'https://oilprice.com/rss/main';
+let _ovInited  = false;
+
+function ovNewsCat(btn) {
+  document.querySelectorAll('#ov-news-cats .cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  _ovFeed = btn.dataset.feed;
+  ovNewsFetch(_ovFeed, false);
+}
+
+function ovNewsRefresh() { ovNewsFetch(_ovFeed, true); }
+
+function ovNewsInit() {
+  if (_ovInited) return;
+  _ovInited = true;
+  ovNewsFetch(_ovFeed, false);
+}
+
+async function ovNewsFetch(feed, force) {
+  const listEl = document.getElementById('ov-news-list');
+  const tsEl   = document.getElementById('ov-news-ts');
+  if (!force) {
+    try {
+      const raw = localStorage.getItem(_LN_CACHE_LS + feed);
+      if (raw) {
+        const d = JSON.parse(raw);
+        if (Date.now() - d.ts < _LN_TTL) { _ovNewsRender(d.items, d.ts, d.feedTitle); return; }
+      }
+    } catch {}
+  }
+  if (listEl) listEl.innerHTML = '<div class="col-span-3 text-sm text-slate-400 text-center py-6"><span class="spin mr-1">â†»</span> Loading headlinesâ€¦</div>';
+  try {
+    const proxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent(feed);
+    const res   = await fetch(proxy);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data  = await res.json();
+    if (!data.contents) throw new Error('No content');
+    const xml   = (new DOMParser()).parseFromString(data.contents, 'text/xml');
+    const chan  = xml.querySelector('channel');
+    const feedTitle = chan ? (chan.querySelector('title')?.textContent || '') : '';
+    const nodes = Array.from(xml.querySelectorAll('item')).slice(0, 9);
+    if (!nodes.length) throw new Error('No articles');
+    const items = nodes.map(n => {
+      const get  = tag => n.querySelector(tag)?.textContent?.trim() || '';
+      const linkEl = n.querySelector('link');
+      const link   = (linkEl && linkEl.textContent.trim()) ? linkEl.textContent.trim() : get('guid');
+      return { title:get('title'), link, pubDate:get('pubDate'), description:(get('description')||'').replace(/<[^>]*>/g,'').trim(), author:get('author')||get('dc\\:creator')||'' };
+    });
+    const ts = Date.now();
+    try { localStorage.setItem(_LN_CACHE_LS + feed, JSON.stringify({items, ts, feedTitle})); } catch {}
+    _ovNewsRender(items, ts, feedTitle);
+  } catch(e) {
+    if (listEl) listEl.innerHTML = '<div class="col-span-3 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-xl p-4">Could not load feed: ' + e.message + '. Try another source.</div>';
+  }
+}
+
+function _ovNewsRender(items, ts, feedTitle) {
+  const listEl = document.getElementById('ov-news-list');
+  const tsEl   = document.getElementById('ov-news-ts');
+  if (tsEl && ts) {
+    const d = new Date(ts);
+    tsEl.textContent = 'Updated ' + d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
+  }
+  if (!listEl || !items.length) return;
+  listEl.innerHTML = items.map(a => {
+    const ago  = _lnAgo(new Date(a.pubDate));
+    const src  = a.author || feedTitle || '';
+    const desc = (a.description || '').slice(0, 100) + ((a.description||'').length > 100 ? 'â€¦' : '');
+    return '<a href="' + a.link + '" target="_blank" rel="noopener" class="card p-4 block hover:shadow-md transition-shadow group">'
+      + '<div class="flex items-center gap-2 mb-2 flex-wrap">'
+      +   (src ? '<span class="badge badge-source text-xs">' + src + '</span>' : '')
+      +   '<span class="text-xs text-slate-400">' + ago + '</span>'
+      + '</div>'
+      + '<p class="text-sm font-semibold text-slate-800 group-hover:text-[#0059A8] leading-snug mb-2">' + a.title + '</p>'
+      + (desc ? '<p class="text-xs text-slate-500 leading-relaxed">' + desc + '</p>' : '')
+      + '</a>';
+  }).join('');
+}
+
 // â”€â”€â”€ LIVE NEWS (RSS via rss2json proxy &mdash; no API key needed) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const _LN_CACHE_LS = 'petro_ln_rss_';
 const _LN_TTL      = 20 * 60 * 1000; // 20-min cache
@@ -2487,6 +2592,7 @@ document.getElementById('refresh-modal').addEventListener('click', function(e) {
 // â”€â”€â”€ INIT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 document.getElementById('hdr-updated').textContent = typeof BUILT_AT !== 'undefined' ? 'Built: ' + BUILT_AT : '';
 buildOverview();
+ovNewsInit();
 _loadPreloadedPdfs();
 </script>
 </body>
