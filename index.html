@@ -38,6 +38,10 @@
   .tab-btn{padding:6px 14px;border-radius:6px;font-size:.8rem;font-weight:500;color:#64748b;cursor:pointer;border:1px solid transparent;transition:all .1s}
   .tab-btn.active{background:#0059A8;color:#fff;border-color:#0059A8}
   .tab-btn:not(.active):hover{background:#EEF3FA;border-color:#d0e6f5}
+  .cat-btn{padding:5px 14px;border-radius:20px;font-size:.78rem;font-weight:500;color:#64748b;cursor:pointer;border:1px solid #e2e8f0;background:#fff;transition:all .1s;white-space:nowrap}
+  .cat-btn.active{background:#0059A8;color:#fff;border-color:#0059A8}
+  .cat-btn:not(.active):hover{background:#EEF3FA;border-color:#d0e6f5}
+  @keyframes spin{to{transform:rotate(360deg)}}.spin{animation:spin .9s linear infinite;display:inline-block}
   .range-bar{height:10px;border-radius:5px;background:#e2e8f0;position:relative;overflow:visible}
   .range-fill{position:absolute;top:0;height:100%;border-radius:5px;background:#BBDAF5}
   .range-base{position:absolute;top:-2px;height:14px;border-radius:3px;background:#0059A8}
@@ -497,14 +501,61 @@
     <!-- NEWS & REFERENCES VIEW -->
     <div id="view-news" class="view">
       <h1 class="text-xl font-bold text-slate-900 mb-1">News &amp; References</h1>
-      <p class="text-sm text-slate-500 mb-4">PDFs placed in <code class="bg-slate-100 px-1 rounded text-xs font-mono">C:\Petro Prices\news\</code> are embedded automatically on each rebuild and appear here instantly. You can also drop a PDF below to add it for this session only.</p>
-      <div id="news-drop" class="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center hover:border-blue-400 transition-colors cursor-pointer mb-5 bg-white" onclick="document.getElementById('news-file-in').click()">
-        <svg class="mx-auto mb-2 text-slate-400" width="32" height="32" fill="none" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 18v-6m0 0l-2.5 2.5M12 12l2.5 2.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <p class="text-sm font-medium text-slate-700">Drop PDF files here or click to browse</p>
-        <p class="text-xs text-slate-400 mt-1">PDF files only &bull; text extracted in-browser &bull; session only (not saved permanently)</p>
+      <p class="text-sm text-slate-500 mb-4">Live headlines from mainstream media plus your internal PDF reports.</p>
+
+      <!-- â”€â”€ LIVE NEWS â”€â”€ -->
+      <div class="card p-5 mb-5">
+        <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+          <div class="flex items-center gap-2">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 1 0 20A10 10 0 0 1 12 2z" stroke="#0059A8" stroke-width="2"/><path d="M12 6v6l4 2" stroke="#0059A8" stroke-width="2" stroke-linecap="round"/></svg>
+            <span class="text-sm font-semibold text-slate-700">Live Market News</span>
+            <span class="badge badge-source">GNews</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span id="ln-ts" class="text-xs text-slate-400"></span>
+            <button id="ln-refresh-btn" onclick="lnRefresh()" class="flex items-center gap-1 text-xs font-semibold bg-[#0059A8] hover:bg-[#003D7A] text-white px-3 py-1.5 rounded-lg transition-colors">
+              <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M4 4v5h5M20 20v-5h-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 9A8 8 0 0 0 5.64 5.64M4 15a8 8 0 0 0 14.36 3.36" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+              Refresh
+            </button>
+          </div>
+        </div>
+
+        <!-- API key setup -->
+        <div id="ln-setup" class="hidden bg-amber-50 border border-amber-200 rounded-xl p-4 mb-4">
+          <p class="text-sm font-semibold text-amber-800 mb-1">Free API key required</p>
+          <p class="text-xs text-amber-700 mb-3">Sign up free at <strong>gnews.io</strong> &rarr; copy your API key &rarr; paste below. (100 requests/day, no credit card needed.)</p>
+          <div class="flex gap-2">
+            <input id="ln-key-in" type="text" placeholder="Paste your GNews API key hereâ€¦" class="flex-1 border border-amber-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 bg-white"/>
+            <button onclick="lnSaveKey()" class="bg-[#0059A8] hover:bg-[#003D7A] text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors shrink-0">Save &amp; Load</button>
+          </div>
+          <button onclick="lnClearKey()" class="mt-2 text-xs text-amber-600 underline">Clear saved key</button>
+        </div>
+
+        <!-- Category tabs -->
+        <div class="flex gap-2 flex-wrap mb-4" id="ln-cats">
+          <button class="cat-btn active" data-q="crude oil OR Brent OR OPEC OR oil price" onclick="lnCat(this)">Crude &amp; OPEC</button>
+          <button class="cat-btn" data-q="petrochemical OR naphtha OR ethylene OR propylene OR cracker" onclick="lnCat(this)">Petrochemicals</button>
+          <button class="cat-btn" data-q="polyethylene OR polypropylene OR LLDPE OR HDPE OR polymer resin" onclick="lnCat(this)">Polymers</button>
+          <button class="cat-btn" data-q="benzene OR styrene OR toluene OR aromatics OR methanol OR butadiene" onclick="lnCat(this)">Aromatics</button>
+          <button class="cat-btn" data-q="energy market OR oil refinery OR LNG OR natural gas" onclick="lnCat(this)">Energy</button>
+        </div>
+
+        <!-- Results -->
+        <div id="ln-list"><p class="text-sm text-slate-400 text-center py-6">Enter your API key above to load live news.</p></div>
       </div>
-      <input id="news-file-in" type="file" accept=".pdf" multiple class="hidden" onchange="handleNewsPdf(this)"/>
-      <div id="news-list"><p class="text-sm text-slate-400">No PDFs uploaded yet this session.</p></div>
+
+      <!-- â”€â”€ PDF REFERENCES â”€â”€ -->
+      <div class="card p-5">
+        <div class="text-sm font-semibold text-slate-700 mb-3">Internal PDF References</div>
+        <p class="text-sm text-slate-500 mb-4">PDFs placed in <code class="bg-slate-100 px-1 rounded text-xs font-mono">C:\Petro Prices\news\</code> are embedded automatically on each rebuild. You can also drop a PDF below for this session only.</p>
+        <div id="news-drop" class="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center hover:border-blue-400 transition-colors cursor-pointer mb-5 bg-white" onclick="document.getElementById('news-file-in').click()">
+          <svg class="mx-auto mb-2 text-slate-400" width="28" height="28" fill="none" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 18v-6m0 0l-2.5 2.5M12 12l2.5 2.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <p class="text-sm font-medium text-slate-700">Drop PDF files here or click to browse</p>
+          <p class="text-xs text-slate-400 mt-1">PDF files only &bull; text extracted in-browser &bull; session only</p>
+        </div>
+        <input id="news-file-in" type="file" accept=".pdf" multiple class="hidden" onchange="handleNewsPdf(this)"/>
+        <div id="news-list"><p class="text-sm text-slate-400">No PDFs uploaded yet this session.</p></div>
+      </div>
     </div>
 
   </main>
@@ -956,7 +1007,7 @@ const WEEKLY_FORECASTS_DATA={
                  }
 };
 const NEWS_PRELOADED=[];
-const BUILT_AT = "13 Jul 2026 21:59";
+const BUILT_AT = "13 Jul 2026 23:17";
 const PASS_HASH = "c9cf635e0294d81fda792880fb4b7086b3b6ae3e2fdede0c5c9172b18c3270c1"; const AUTH_ENABLED = true;
 </script>
 <script>
@@ -1802,6 +1853,7 @@ function showView(id) {
     buildProductView(id);
     _built.add(id);
   }
+  if (id === 'news') lnInit();
   window.scrollTo(0,0);
 }
 
@@ -2192,6 +2244,136 @@ function _renderNewsItems() {
     Array.from(e.dataTransfer.files).filter(f=>f.name.toLowerCase().endsWith('.pdf')).forEach(f=>_extractAndAddPdf(f));
   });
 })();
+
+// â”€â”€â”€ LIVE NEWS (GNews API) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+const _LN_KEY_LS   = 'petro_gnews_key';
+const _LN_CACHE_LS = 'petro_ln_cache_';
+const _LN_TTL      = 30 * 60 * 1000; // 30 min cache
+let   _lnQ         = 'crude oil OR Brent OR OPEC OR oil price';
+let   _lnInited    = false;
+
+function lnGetKey() { return localStorage.getItem(_LN_KEY_LS) || ''; }
+
+function lnSaveKey() {
+  const k = (document.getElementById('ln-key-in').value || '').trim();
+  if (!k) return;
+  localStorage.setItem(_LN_KEY_LS, k);
+  document.getElementById('ln-setup').classList.add('hidden');
+  lnFetch(_lnQ, true);
+}
+
+function lnClearKey() {
+  localStorage.removeItem(_LN_KEY_LS);
+  document.getElementById('ln-key-in').value = '';
+  document.getElementById('ln-setup').classList.remove('hidden');
+  document.getElementById('ln-list').innerHTML = '<p class="text-sm text-slate-400 text-center py-6">Enter your API key above to load live news.</p>';
+}
+
+function lnCat(btn) {
+  document.querySelectorAll('#ln-cats .cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  _lnQ = btn.dataset.q;
+  lnFetch(_lnQ, false);
+}
+
+function lnRefresh() { lnFetch(_lnQ, true); }
+
+function lnInit() {
+  if (_lnInited) return;
+  _lnInited = true;
+  const key = lnGetKey();
+  if (!key) {
+    document.getElementById('ln-setup').classList.remove('hidden');
+    return;
+  }
+  document.getElementById('ln-setup').classList.add('hidden');
+  const cached = _lnCacheGet(_lnQ);
+  if (cached) { _lnRender(cached.articles, cached.ts); } else { lnFetch(_lnQ, false); }
+}
+
+function _lnCacheGet(q) {
+  try {
+    const raw = localStorage.getItem(_LN_CACHE_LS + q);
+    if (!raw) return null;
+    const d = JSON.parse(raw);
+    return (Date.now() - d.ts < _LN_TTL) ? d : null;
+  } catch { return null; }
+}
+
+async function lnFetch(q, force) {
+  const key = lnGetKey();
+  if (!key) { document.getElementById('ln-setup').classList.remove('hidden'); return; }
+  if (!force) { const c = _lnCacheGet(q); if (c) { _lnRender(c.articles, c.ts); return; } }
+
+  const listEl = document.getElementById('ln-list');
+  const btn    = document.getElementById('ln-refresh-btn');
+  listEl.innerHTML = '<p class="text-sm text-slate-400 text-center py-8"><span class="spin inline-block mr-2">â†»</span>Fetching latest headlinesâ€¦</p>';
+  if (btn) btn.disabled = true;
+
+  try {
+    const url = 'https://gnews.io/api/v4/search?q=' + encodeURIComponent(q)
+              + '&token=' + encodeURIComponent(key)
+              + '&lang=en&max=10&sortby=publishedAt';
+    const res  = await fetch(url);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.errors?.[0] || ('HTTP ' + res.status));
+    }
+    const data = await res.json();
+    const articles = data.articles || [];
+    const ts = Date.now();
+    try { localStorage.setItem(_LN_CACHE_LS + q, JSON.stringify({articles, ts})); } catch {}
+    _lnRender(articles, ts);
+  } catch(e) {
+    listEl.innerHTML = '<div class="bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-700">'
+      + '<strong>Could not load news:</strong> ' + e.message
+      + '<br><span class="text-xs text-red-500 mt-1 block">Check your API key is correct and you have requests remaining today (100/day on free plan).</span>'
+      + '<button onclick="lnClearKey()" class="mt-2 text-xs underline text-red-600">Re-enter API key</button>'
+      + '</div>';
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+function _lnRender(articles, ts) {
+  const tsEl   = document.getElementById('ln-ts');
+  const listEl = document.getElementById('ln-list');
+  if (tsEl && ts) {
+    const d = new Date(ts);
+    tsEl.textContent = 'Updated ' + d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
+  }
+  if (!articles.length) {
+    listEl.innerHTML = '<p class="text-sm text-slate-400 text-center py-6">No articles found for this search.</p>';
+    return;
+  }
+  listEl.innerHTML = articles.map(a => {
+    const ago  = _lnAgo(new Date(a.publishedAt));
+    const src  = (a.source && a.source.name) ? a.source.name : 'Unknown';
+    const desc = (a.description || '').slice(0, 150) + ((a.description || '').length > 150 ? 'â€¦' : '');
+    const img  = a.image
+      ? '<img src="' + a.image + '" alt="" class="w-16 h-16 rounded-lg object-cover shrink-0 ml-3" loading="lazy" onerror="this.style.display=\'none\'">'
+      : '';
+    return '<div class="border-b border-slate-100 last:border-0 py-3 flex items-start gap-2">'
+      + '<div class="min-w-0 flex-1">'
+      +   '<div class="flex items-center gap-2 mb-1 flex-wrap">'
+      +     '<span class="badge badge-source text-xs">' + src + '</span>'
+      +     '<span class="text-xs text-slate-400">' + ago + '</span>'
+      +   '</div>'
+      +   '<a href="' + a.url + '" target="_blank" rel="noopener" class="text-sm font-semibold text-slate-800 hover:text-[#0059A8] leading-snug block mb-1">' + a.title + '</a>'
+      +   '<p class="text-xs text-slate-500 leading-relaxed">' + desc + '</p>'
+      + '</div>'
+      + img
+      + '</div>';
+  }).join('');
+}
+
+function _lnAgo(d) {
+  const s = Math.floor((Date.now() - d) / 1000);
+  if (s < 60) return 'just now';
+  if (s < 3600) return Math.floor(s/60) + 'm ago';
+  if (s < 86400) return Math.floor(s/3600) + 'h ago';
+  return Math.floor(s/86400) + 'd ago';
+}
 
 // â”€â”€â”€ AUTH GATE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function hashStr(s) {
